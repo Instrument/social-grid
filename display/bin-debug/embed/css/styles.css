@@ -1,0 +1,106 @@
+﻿/* App */
+
+.app-loading-text {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 18;
+  letter-spacing: 0.2em;
+  leading: -2px;
+  color: #080808;
+}
+
+/* Twitter 1x1 */
+
+.twitter-text {
+  font-family: LorimerNo2CondensedMedium;
+	font-size: 24pt;
+  letter-spacing: 0.3em;
+  leading: -6px;
+}
+
+.twitter-text-highlight {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 24pt;
+  letter-spacing: 0.3em;
+  leading: -6px;
+}
+
+.twitter-author {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 18pt;
+  letter-spacing: 0.2em;
+  leading: -4px;
+}
+
+.twitter-meta {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 18pt;
+  letter-spacing: 0.2em;
+  leading: -4px;
+}
+
+/* Twitter 3x3 */
+
+.twitter-3x3-text {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 70pt;
+  letter-spacing: 0.4em;
+  leading: -19px;
+}
+
+.twitter-3x3-text-highlight {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 70pt;
+  letter-spacing: 0.4em;
+  leading: -19px;
+}
+
+.twitter-3x3-author {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 30pt;
+  letter-spacing: 0.3em;
+  leading: -9px;
+}
+
+.twitter-3x3-meta {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 30pt;
+  letter-spacing: 0.3em;
+  leading: -9px;
+}
+
+.twitter-3x3-meta-highlight {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 30pt;
+  letter-spacing: 0.3em;
+  leading: -9px;
+}
+
+/* Instagram 2x2 */
+
+.instagram-meta {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 24pt;
+  letter-spacing: 0.3em;
+  leading: -6px;
+}
+
+.instagram-meta-highlight {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 24pt;
+  letter-spacing: 0.3em;
+  leading: -6px;
+}
+
+.instagram-caption {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 24pt;
+  letter-spacing: 0.3em;
+  leading: -6px;
+}
+
+.instagram-caption-highlight {
+  font-family: LorimerNo2CondensedMedium;
+  font-size: 24pt;
+  letter-spacing: 0.3em;
+  leading: -6px;
+}

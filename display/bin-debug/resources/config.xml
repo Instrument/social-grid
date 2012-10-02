@@ -1,0 +1,21 @@
+<config>
+  
+  <!-- colors for twitter content -->
+  <twitterTextColor>#7c7c7c</twitterTextColor>
+  <twitterHighlightColor>#1babbe</twitterHighlightColor>
+  <twitterBackgroundColor>#f2f2f2</twitterBackgroundColor>
+  
+  <!-- colors for instagram content -->
+  <instagramTextColor>#f2f2f2</instagramTextColor>
+  <instagramHighlightColor>#1babbe</instagramHighlightColor>
+  
+  <!-- whether to pull social media directly from source (instead of from moderation tool) -->
+  <pullSocialDirectly>true</pullSocialDirectly>
+  
+  <!-- if pull social media directly, lists of hashtags to use -->
+  <twitterHashtags>instrumentoutpost, mfnw, yolo</twitterHashtags>
+  <instagramHashtags>instrumentoutpost</instagramHashtags>
+  
+  <backendRoot>http://ec2-50-112-66-228.us-west-2.compute.amazonaws.com:1337</backendRoot>
+  
+</config>
