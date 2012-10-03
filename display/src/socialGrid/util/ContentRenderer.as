@@ -1,4 +1,5 @@
 package socialGrid.util {
+  
   import flash.display.BitmapData;
   import flash.utils.Dictionary;
   
@@ -44,18 +45,12 @@ package socialGrid.util {
           bmd.draw(template);
           break;
         case 'user':
-          
           userContentVO = contentVO as UserContentVO;
-          
-          
-          bmd = userContentVO.imageData; // [(!)] fit it to the right size!
-          
+          sizeSplit = size.split('x');
+          bmd = new BitmapData(sizeSplit[0] * 256, sizeSplit[1] * 256, true, 0x00000000);
+          bmd.draw(BitmapResizer.resizeBitmapData(userContentVO.imageData, sizeSplit[0] * 256, sizeSplit[1] * 256));
           break;
       }
-      
-      
-      
-      
       
       return bmd;
     }

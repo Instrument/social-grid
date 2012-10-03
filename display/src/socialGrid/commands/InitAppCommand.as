@@ -9,8 +9,6 @@ package socialGrid.commands {
 		
 		public function InitAppCommand() {}
 		
-		override public function toString():String { return "InitAppCommand"; }
-		
 		override public function execute(e:Event):void {
 			
       if (!Locator.instance.appModel.configLoaded) {

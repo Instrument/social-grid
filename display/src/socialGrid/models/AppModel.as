@@ -22,8 +22,6 @@ package socialGrid.models {
     public var postsModel:PostsModel;
     public var contentModel:ContentModel;
     
-    public var assetsModel:AppAssetsModel;
-    
     public function AppModel() {
       
       config = new Config();
@@ -31,8 +29,6 @@ package socialGrid.models {
       pendingEventsModel = new PendingEventsModel();
       postsModel = new PostsModel();
       contentModel = new ContentModel();
-      
-      assetsModel = new AppAssetsModel();
       
       surveyUserContent();
     }
@@ -48,7 +44,7 @@ package socialGrid.models {
         }
       }
       
-      var imagesFolder:File = File.applicationDirectory.resolvePath('resources/assets/images/');
+      var imagesFolder:File = File.applicationDirectory.resolvePath('resources/images/');
       
       var sizeFolders:Array = new Array();
       var file:File;
@@ -67,7 +63,7 @@ package socialGrid.models {
           if (isFilenameImage(file.name)) {
             
             userContentVO = new UserContentVO([sizeFolder.name]);
-            userContentVO.imageUrl = 'resources/assets/images/' + sizeFolder.name + '/' + file.name;
+            userContentVO.imageUrl = 'resources/images/' + sizeFolder.name + '/' + file.name;
             
             contentModel.addContentVO(userContentVO);
           }

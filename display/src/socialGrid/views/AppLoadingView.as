@@ -1,17 +1,16 @@
 package socialGrid.views {
   
   import aze.motion.easing.Cubic;
+  import aze.motion.easing.Expo;
   import aze.motion.eaze;
   
   import flash.display.BlendMode;
-  import flash.display.MovieClip;
   import flash.display.Shape;
   import flash.display.Sprite;
   import flash.events.Event;
   import flash.geom.ColorTransform;
   import flash.text.TextFieldAutoSize;
   
-  import socialGrid.assets.SocialGridAssets;
   import socialGrid.core.Locator;
   import socialGrid.util.GradientHelper;
   import socialGrid.util.GraphicsHelper;
@@ -19,10 +18,15 @@ package socialGrid.views {
 
   public class AppLoadingView extends Sprite {
     
-    protected var bkgCircle:Sprite
-    protected var loadingCircle:Sprite;
+    protected var bkg:Shape;
+    protected var bkgCircle:Shape;
+    protected var loadingCircle:Shape;
     protected var foldingTeepee:FoldingTeepee;
     protected var loadingTF:StyledTextField;
+    protected var cover:Shape;
+    
+    protected var loadingCircleInnerRadius:Number;
+    protected var loadingCircleOuterRadius:Number;
     
     protected var loadingShown:Boolean; // whether loading text has been shown
     
@@ -33,16 +37,28 @@ package socialGrid.views {
     protected var targetPercent:Number;
     protected var drawnPercent:Number;
     
-    protected var _proxyPercent:Number; // value for proxy getter and setter used for outro animation
+    protected var _outroPercent:Number; // value for proxy getter and setter used for outro animation
     
     public function AppLoadingView() {
       
-      // yellow background
-      //addChild(new SocialGridAssets.yellowBkg());
+      loadingCircleInnerRadius = 104;
+      loadingCircleOuterRadius = 108;
       
-      graphics.beginFill(0xefefef, 1);
+      // draw initial color
+      graphics.beginFill(0x000000, 1);
       graphics.drawRect(0, 0, 1280, 768);
       graphics.endFill();
+    }
+    
+    public function init():void {
+      
+      bkg = new Shape();
+      addChild(bkg);
+      with (bkg.graphics) {
+        beginFill(Locator.instance.appModel.config.loadingBackgroundColor, 1);
+        drawRect(0, 0, 1280, 768);
+        endFill();
+      }
       
       var fade:Shape = new Shape();
       addChild(fade);
@@ -50,18 +66,17 @@ package socialGrid.views {
       fade.alpha = 0.1;
       fade.blendMode = BlendMode.MULTIPLY;
       
-      bkgCircle = new Sprite();
+      bkgCircle = new Shape();
       addChild(bkgCircle);
       bkgCircle.x = 640;
       bkgCircle.y = 384;
       with (bkgCircle.graphics) {
-        beginFill(0x3bb3c5, 1);
+        beginFill(Locator.instance.appModel.config.loadingCircleColor, 1);
         drawCircle(0, 0, 100);
         endFill();
       }
-      //bkgCircle.alpha = 0.75;
       
-      loadingCircle = new Sprite();
+      loadingCircle = new Shape();
       addChild(loadingCircle);
       loadingCircle.x = 640;
       loadingCircle.y = 384;
@@ -74,7 +89,7 @@ package socialGrid.views {
       foldingTeepee.visible = false;
       
       // color transform teepee
-      var color:uint = 0x0a201d;
+      var color:uint = Locator.instance.appModel.config.loadingIconColor;
       var rgbObj:Object = {
         red: ((color & 0xFF0000) >> 16),
         green: ((color & 0x00FF00) >> 8),
@@ -91,13 +106,21 @@ package socialGrid.views {
       loadingTF.autoSize = TextFieldAutoSize.LEFT;
       loadingTF.wordWrap = true;
       
+      cover = new Shape();
+      addChild(cover);
+      with (cover.graphics) {
+        beginFill(0x000000, 1);
+        drawRect(0, 0, 1280, 768);
+        endFill();
+      }
+      
+      // initial state
       drawPercent(0);
       setPercent(0);
-      
       loadingTF.alpha = 0;
-      //eaze(loadingTF).to(1.5, {alpha:1}).easing(Cubic.easeInOut);
       
-      revealCrest();
+      // reveal
+      eaze(cover).to(1, {alpha:0}).easing(Expo.easeInOut).onComplete(revealCrest);
     }
     
     public function setLoadingViewFinishedCallback(callback:Function):void {
@@ -129,62 +152,41 @@ package socialGrid.views {
       
       loadingCircle.graphics.clear();
       
-      loadingCircle.graphics.beginFill(0x3bb3c5, 0.75);
+      // circle fill
+      loadingCircle.graphics.beginFill(Locator.instance.appModel.config.loadingCircleColor, 0.75);
       loadingCircle.graphics.moveTo(0, 0);
       loadingCircle.graphics.lineTo(0, -100);
-      
       GraphicsHelper.drawArc(loadingCircle.graphics, 0, 0, 100, -90, -90 + value * 360, 1);
-      
       loadingCircle.graphics.lineTo(0, 0);
       loadingCircle.graphics.endFill();
       
-      
-      loadingCircle.graphics.beginFill(0x3bb3c5, 1);
-      
-      var innerRad:Number = 104; // 80
-      var outerRad:Number = 108; // 100
-      
-      loadingCircle.graphics.moveTo(0, -innerRad);
-      
-      GraphicsHelper.drawArc(loadingCircle.graphics, 0, 0, innerRad, -90, -90 + value * 360, 1);
-      
-      GraphicsHelper.lineToArcPosition(loadingCircle.graphics, 0, 0, outerRad, -90 + value * 360);
-      
-      GraphicsHelper.drawArc(loadingCircle.graphics, 0, 0, outerRad, -90 + value * 360, -90, 1);
-      
-      loadingCircle.graphics.lineTo(0, -innerRad);
-      
+      // ring fill
+      loadingCircle.graphics.beginFill(Locator.instance.appModel.config.loadingCircleColor, 1);
+      loadingCircle.graphics.moveTo(0, -loadingCircleInnerRadius);
+      GraphicsHelper.drawArc(loadingCircle.graphics, 0, 0, loadingCircleInnerRadius, -90, -90 + value * 360, 1);
+      GraphicsHelper.lineToArcPosition(loadingCircle.graphics, 0, 0, loadingCircleOuterRadius, -90 + value * 360);
+      GraphicsHelper.drawArc(loadingCircle.graphics, 0, 0, loadingCircleOuterRadius, -90 + value * 360, -90, 1);
+      loadingCircle.graphics.lineTo(0, -loadingCircleInnerRadius);
       loadingCircle.graphics.endFill();
       
       loadingTF.text = 'LOADING / ' + Math.round(100 * value) + '%';
-      
-      //bkgCircle.alpha = 0.75 + value * 0.2; // gets it almost there
-      
-      if (value > 0.9) {
-        //loadingCircle.alpha = 10 * (1 - value);
-      }
     }
     
-    public function get proxyPercent():Number { return _proxyPercent; }
-    public function set proxyPercent(value:Number):void {
-      _proxyPercent = value;
+    public function get outroPercent():Number { return _outroPercent; }
+    public function set outroPercent(value:Number):void {
+      _outroPercent = value;
+      
+      value = 1 - value;
       
       loadingCircle.graphics.clear();
-      loadingCircle.graphics.beginFill(0x3bb3c5, 1);
       
-      var innerRad:Number = 104; // 80
-      var outerRad:Number = 108; // 100
-      
-      loadingCircle.graphics.moveTo(0, -innerRad);
-      
-      GraphicsHelper.drawArc(loadingCircle.graphics, 0, 0, innerRad, -90, -90 - value * 360, 1);
-      
-      GraphicsHelper.lineToArcPosition(loadingCircle.graphics, 0, 0, outerRad, -90 - value * 360);
-      
-      GraphicsHelper.drawArc(loadingCircle.graphics, 0, 0, outerRad, -90 - value * 360, -90, 1);
-      
-      loadingCircle.graphics.lineTo(0, -innerRad);
-      
+      // ring fill backwards
+      loadingCircle.graphics.beginFill(Locator.instance.appModel.config.loadingCircleColor, 1);
+      loadingCircle.graphics.moveTo(0, -loadingCircleInnerRadius);
+      GraphicsHelper.drawArc(loadingCircle.graphics, 0, 0, loadingCircleInnerRadius, -90, -90 - value * 360, 1);
+      GraphicsHelper.lineToArcPosition(loadingCircle.graphics, 0, 0, loadingCircleOuterRadius, -90 - value * 360);
+      GraphicsHelper.drawArc(loadingCircle.graphics, 0, 0, loadingCircleOuterRadius, -90 - value * 360, -90, 1);
+      loadingCircle.graphics.lineTo(0, -loadingCircleInnerRadius);
       loadingCircle.graphics.endFill();
     }
     
@@ -196,18 +198,16 @@ package socialGrid.views {
     
     protected function doLoadOutro():void {
       bkgCircle.alpha = 1;
-      //eaze(bkgCircle).to(0.5, {alpha:1}).easing(Cubic.easeInOut);
       
       eaze(loadingTF).to(0.75, {alpha:0}).easing(Cubic.easeInOut);
       
-      _proxyPercent = 1;
-      eaze(this).to(0.5, {proxyPercent:0}).easing(Cubic.easeInOut);
+      _outroPercent = 0;
+      eaze(this).to(0.5, {outroPercent:1}).easing(Cubic.easeInOut);
       eaze(loadingCircle).to(1, {alpha:0}).easing(Cubic.easeInOut).onComplete(onLoadingSequenceFinished);
     }
     
     protected function onLoadingSequenceFinished():void {
       loadingSequenceFinished = true;
-      trace(loadingViewFinishedCallback);
       if (loadingViewFinishedCallback != null) {
         loadingViewFinishedCallback.apply();
       }

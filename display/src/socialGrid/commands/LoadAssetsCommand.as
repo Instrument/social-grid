@@ -1,6 +1,5 @@
 package socialGrid.commands {
   
-  // import flash classes
   import flash.events.Event;
   
   import socialGrid.core.Locator;
@@ -16,8 +15,6 @@ package socialGrid.commands {
       init();
     }
     
-    override public function toString():String { return "LoadAssetsCommand"; }
-    
     private function init():void {
       assetLoader = new AssetLoader();
       assetLoader.addEventListener('asset_loader_complete', assetLoaderCompleteListener);
@@ -32,11 +29,6 @@ package socialGrid.commands {
       for each (userContentVO in Locator.instance.appModel.contentModel.getContentVOsForLoading('user')) {
         assetLoader.addLoadItem(new ImageAssetLoaderItem(userContentVO.imageUrl, userContentVO, 'imageData'));
       }
-      
-      // test assets
-      assetLoader.addLoadItem(new ImageAssetLoaderItem('resources/test_assets/test_image_768.jpg', Locator.instance.appModel.assetsModel, 'testImage768'));
-      assetLoader.addLoadItem(new ImageAssetLoaderItem('resources/test_assets/test_image_1280x768.jpg', Locator.instance.appModel.assetsModel, 'testImage1280x768'));
-      
       
       // load em!
       assetLoader.load();

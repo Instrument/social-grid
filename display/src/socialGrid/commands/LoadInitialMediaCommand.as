@@ -8,17 +8,13 @@ package socialGrid.commands {
   
   public class LoadInitialMediaCommand extends BaseCommand {
     
-    protected var minNum1x1:int;
+    protected var minNum1x1:int; // the minimum number of 1x1 content that must be loaded into the app before it can start
     
     public function LoadInitialMediaCommand() {
-      //
+      minNum1x1 = 50;
     }
     
-    override public function toString():String { return "LoadInitialMediaCommand"; }
-    
     override public function execute(e:Event):void {
-      
-      minNum1x1 = 50;
       
       // start loading media
       if (Locator.instance.appModel.config.pullSocialDirectly) {
@@ -30,23 +26,25 @@ package socialGrid.commands {
       // start recruiting posts
       Locator.instance.postRecruitmentController.start(); // starts selecting posts to be used as content
       
-      // if there are already enough assets
+      // check number of 1x1 content
       var num1x1:int = Locator.instance.appModel.contentModel.getNumContentVOs(new ContentQuery({size:'1x1'}));
       if (num1x1 >= minNum1x1) {
+        
+        // already enough
         Locator.instance.ui.loadingView.setInitialMediaPercent(1);
         onEnoughPosts();
-        return;
+        
+      } else {
+        
+        // start listening for more
+        Locator.instance.addEventListener('content_added', contentAddedListener);
+        
+        // set initial media percent
+        Locator.instance.ui.loadingView.setInitialMediaPercent(num1x1 / minNum1x1);
       }
-      
-      // start listening for more
-      Locator.instance.addEventListener('content_added', contentAddedListener);
-      
-      // set initial media percent
-      Locator.instance.ui.loadingView.setInitialMediaPercent(num1x1 / minNum1x1);
     }
     
     protected function onEnoughPosts():void {
-      
       Locator.instance.appModel.initialMediaLoaded = true;
       onComplete();
     }
@@ -59,7 +57,6 @@ package socialGrid.commands {
         Locator.instance.removeEventListener('content_added', contentAddedListener);
         Locator.instance.ui.loadingView.setInitialMediaPercent(1);
         onEnoughPosts();
-        return;
       }
     }
   }

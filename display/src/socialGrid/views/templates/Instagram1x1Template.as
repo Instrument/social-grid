@@ -6,7 +6,6 @@ package socialGrid.views.templates {
   import socialGrid.models.content.BaseContentVO;
   import socialGrid.models.content.InstagramContentVO;
   import socialGrid.util.BitmapResizer;
-  
 
   public class Instagram1x1Template extends BaseGridTemplate {
     
@@ -20,7 +19,6 @@ package socialGrid.views.templates {
     
     override public function populate(contentVO:BaseContentVO):void {
       var instagramContentVO:InstagramContentVO = contentVO as InstagramContentVO;
-      
       bmp.bitmapData = BitmapResizer.resizeBitmapData(instagramContentVO.imageData, 256);
     }
   }

@@ -1,8 +1,6 @@
 package socialGrid.views {
   
   import flash.display.Sprite;
-  
-  import socialGrid.core.Locator;
 
   public class UI extends Sprite {
     
@@ -25,7 +23,11 @@ package socialGrid.views {
       }
     }
     
-    public function doTest():void {
+    public function showDebugView():void {
+      addChild(new DebugView());
+    }
+    
+    public function showTestView():void {
       addChild(new TestView());
     }
   }

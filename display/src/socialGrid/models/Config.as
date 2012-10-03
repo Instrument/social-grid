@@ -5,6 +5,13 @@ package socialGrid.models {
     
     public var xml:XML;
     
+    // properties
+    
+    public var loadingBackgroundColor:uint;
+    public var loadingCircleColor:uint;
+    public var loadingIconColor:uint;
+    public var loadingTextColor:uint;
+    
     public var twitterTextColor:uint;
     public var twitterHighlightColor:uint;
     public var twitterBackgroundColor:uint;
@@ -25,7 +32,13 @@ package socialGrid.models {
       
       this.xml = xml;
       
-      twitterTextColor = getXmlColor('twitterTextColor', 0xff0000);
+      loadingBackgroundColor = getXmlColor('loadingBackgroundColor', 0xefefef);
+      loadingCircleColor = getXmlColor('loadingCircleColor', 0x3bb3c5);
+      loadingIconColor = getXmlColor('loadingIconColor', 0x0a201d);
+      loadingTextColor = getXmlColor('loadingTextColor', 0x080808);
+      setStyleColor('.app-loading-text', loadingTextColor);
+      
+      twitterTextColor = getXmlColor('twitterTextColor', 0x7c7c7c);
       setStyleColor('.twitter-text', twitterTextColor);
       setStyleColor('.twitter-author', twitterTextColor);
       setStyleColor('.twitter-meta', twitterTextColor);
@@ -33,18 +46,18 @@ package socialGrid.models {
       setStyleColor('.twitter-3x3-author', twitterTextColor);
       setStyleColor('.twitter-3x3-meta', twitterTextColor);
       
-      twitterHighlightColor = getXmlColor('twitterHighlightColor', 0xffffff);
+      twitterHighlightColor = getXmlColor('twitterHighlightColor', 0x1babbe);
       setStyleColor('.twitter-text-highlight', twitterHighlightColor);
       setStyleColor('.twitter-3x3-text-highlight', twitterHighlightColor);
       setStyleColor('.twitter-3x3-meta-highlight', twitterHighlightColor);
       
-      twitterBackgroundColor = getXmlColor('twitterBackgroundColor', 0x000000);
+      twitterBackgroundColor = getXmlColor('twitterBackgroundColor', 0xf2f2f2);
       
-      instagramTextColor = getXmlColor('instagramTextColor', 0xff0000);
+      instagramTextColor = getXmlColor('instagramTextColor', 0xf2f2f2);
       setStyleColor('.instagram-meta', instagramTextColor);
       setStyleColor('.instagram-caption', instagramTextColor);
       
-      instagramHighlightColor = getXmlColor('instagramHighlightColor', 0xff0000);
+      instagramHighlightColor = getXmlColor('instagramHighlightColor', 0x1babbe);
       setStyleColor('.instagram-meta-highlight', instagramHighlightColor);
       setStyleColor('.instagram-caption-highlight', instagramHighlightColor);
 
@@ -54,20 +67,6 @@ package socialGrid.models {
       instagramHashtags = getXmlArray('instagramHashtags', ['instrumentoutpost']);
       
       backendRoot = getXmlString('backendRoot', 'http://ec2-50-112-66-228.us-west-2.compute.amazonaws.com:1337');
-      
-      //printConfig();
-    }
-    
-    protected function printConfig():void {
-      trace('twitterTextColor: ' + twitterTextColor);
-      trace('twitterHighlightColor: ' + twitterHighlightColor);
-      trace('twitterBackgroundColor: ' + twitterBackgroundColor);
-      trace('instagramTextColor: ' + instagramTextColor);
-      trace('instagramHighlightColor: ' + instagramHighlightColor);
-      trace('pullSocialDirectly: ' + pullSocialDirectly);
-      trace('twitterHashtags: ' + twitterHashtags);
-      trace('instagramHashtags: ' + instagramHashtags);
-      trace('backendRoot: ' + backendRoot);
     }
     
     protected function setStyleColor(styleName:String, color:uint):void {

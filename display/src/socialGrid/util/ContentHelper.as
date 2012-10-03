@@ -24,6 +24,23 @@ package socialGrid.util {
       return contentView;
     }
     
+    /*
+    public static function createBitmapDataContentView(contentVO:BaseContentVO, bitmapData:BitmapData, size:String, displayTime:Number):ContentView {
+      
+      if (!contentVO) { return null; }
+      
+      // checkout the contentVO so it can't be used twice
+      Locator.instance.appModel.contentModel.checkoutContentVO(contentVO);
+      
+      // make the content view
+      var sizeSplit:Array = size.split('x');
+      var contentView:ContentView = new ContentView(contentVO, bitmapData, displayTime);
+      contentView.gridWidth = int(sizeSplit[0]);
+      contentView.gridHeight = int(sizeSplit[1]);
+      return contentView;
+    }
+    */
+    
     public static function createNonContentView(bitmapData:BitmapData, size:String, displayTime:Number):ContentView {
       // make the content view
       var sizeSplit:Array = size.split('x');

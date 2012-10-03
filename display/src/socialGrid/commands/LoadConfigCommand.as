@@ -16,8 +16,6 @@ package socialGrid.commands {
 			init();
 		}
 		
-		override public function toString():String { return "LoadConfigCommand"; }
-		
 		private function init():void {
 			_dataLoader = new URLLoader();
 			_dataLoader.addEventListener(Event.COMPLETE, dataLoaderCompleteListener);
@@ -25,16 +23,10 @@ package socialGrid.commands {
 		}
 		
 		override public function execute(e:Event):void {
-      
-      //Locator.ui.appLoadingScreen.displayMessage("Loading Config...");
-			
-			_dataLoader.load(new URLRequest("resources/config.xml"));
+      _dataLoader.load(new URLRequest("resources/config.xml"));
 		}
 		
 		protected function dataLoaderCompleteListener(e:Event):void {
-			
-      trace('config loaded');
-      
 			var xml:XML;
 			try {
 				xml = XML(_dataLoader.data);
@@ -45,13 +37,16 @@ package socialGrid.commands {
 			
 			// parse config
 			Locator.instance.appModel.config.parseConfigXml(xml);
+      
+      // init loading screen (now that config colors are loaded)
+      Locator.instance.ui.loadingView.init();
 			
 			Locator.instance.appModel.configLoaded = true;
 			onComplete();
 		}
 		
 		protected function dataLoaderErrorListener(e:IOErrorEvent):void {
-			// load fail
+      onFailure(); // load fail
 		}
 	}
 }

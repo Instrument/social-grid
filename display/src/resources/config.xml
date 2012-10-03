@@ -1,5 +1,11 @@
 <config>
   
+  <!-- colors for loading screen -->
+  <loadingBackgroundColor>#efefef</loadingBackgroundColor>
+  <loadingCircleColor>#3bb3c5</loadingCircleColor>
+  <loadingIconColor>#0a201d</loadingIconColor>
+  <loadingTextColor>#080808</loadingTextColor>
+  
   <!-- colors for twitter content -->
   <twitterTextColor>#7c7c7c</twitterTextColor>
   <twitterHighlightColor>#1babbe</twitterHighlightColor>
@@ -10,12 +16,13 @@
   <instagramHighlightColor>#1babbe</instagramHighlightColor>
   
   <!-- whether to pull social media directly from source (instead of from moderation tool) -->
-  <pullSocialDirectly>true</pullSocialDirectly>
+  <pullSocialDirectly>false</pullSocialDirectly>
   
   <!-- if pull social media directly, lists of hashtags to use -->
-  <twitterHashtags>instrumentoutpost, mfnw, yolo</twitterHashtags>
+  <twitterHashtags>instrumentoutpost</twitterHashtags>
   <instagramHashtags>instrumentoutpost</instagramHashtags>
   
+  <!-- where the backend lives -->
   <backendRoot>http://ec2-50-112-66-228.us-west-2.compute.amazonaws.com:1337</backendRoot>
   
 </config>

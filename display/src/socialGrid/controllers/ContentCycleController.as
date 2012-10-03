@@ -14,12 +14,10 @@ package socialGrid.controllers {
   import socialGrid.models.programs.RandomProgram;
   import socialGrid.util.ContentHelper;
   import socialGrid.util.ContentQuery;
+  import socialGrid.util.RandomHelper;
   import socialGrid.views.ContentView;
   import socialGrid.views.layouts.BaseLayout;
-  import socialGrid.views.layouts.CalendarLayout;
-  import socialGrid.views.layouts.TweetsLayout;
   import socialGrid.views.layouts._3x3_2x2_1x1s_Layout;
-  import socialGrid.views.layouts._3x3_2x3_Layout;
   import socialGrid.views.layouts._5x3_Layout;
   
   public class ContentCycleController {
@@ -109,25 +107,14 @@ package socialGrid.controllers {
             nextProgram.init();
           }
           break;
-        case 'interstitial': // goes to either layout or random
-          if (1) {
-            nextProgram = programs['layout'];
-            makeWaitingLayout();
-            nextProgram.init();
-          } else {
-            nextProgram = programs['random'];
-            nextProgram.init();
-          }
+        case 'interstitial': // always goes to layout
+          nextProgram = programs['layout'];
+          makeWaitingLayout();
+          nextProgram.init();
           break;
-        case 'layout': // goes to either layout or random
-          if (0) {
-            nextProgram = programs['layout'];
-            makeWaitingLayout();
-            nextProgram.init();
-          } else {
-            nextProgram = programs['random'];
-            nextProgram.init();
-          }
+        case 'layout': // always goes to random
+          nextProgram = programs['random'];
+          nextProgram.init();
           break;
       }
       
@@ -147,6 +134,8 @@ package socialGrid.controllers {
     // called when interstitial program starts
     public function chooseInterstitial():void {
       
+      // [(!)] randomize this
+      
       var userContentVO:UserContentVO = Locator.instance.appModel.contentModel.getContentVO(new ContentQuery({size:'5x3'})) as UserContentVO;
       if (userContentVO) {
         currentInterstitialBmd = userContentVO.imageData;
@@ -161,30 +150,8 @@ package socialGrid.controllers {
     public function makeWaitingLayout():void {
       if (waitingLayout) { return; }
       
-      waitingLayout = new _5x3_Layout();
-      return;
+      waitingLayout = new _3x3_2x2_1x1s_Layout();
       
-      /*
-      switch (Math.floor(Math.random() * 7)) {
-        case 0:
-        case 1:
-        case 2:
-          waitingLayout = new _3x3_2x3_Layout();
-          break;
-        case 3:
-        case 4:
-        case 5:
-          waitingLayout = new _3x3_2x2_1x1s_Layout();
-          break;
-        case 6:
-          waitingLayout = null; // makes a calendar layout
-          break;
-      }
-      
-      var numMFNWContent:int = Locator.instance.appModel.contentModel.getNumContentVOs(
-        new ContentQuery({contentType: 'mfnw', matchActiveContent: true, matchDisplayedContent: true})
-      );
-        
       var contentView:ContentView;
       if (!waitingLayout || !waitingLayout.hasContent) {
         if (waitingLayout) {
@@ -194,13 +161,8 @@ package socialGrid.controllers {
           }
         }
         
-        waitingLayout = new CalendarLayout(calendarIndex);
-        calendarIndex += 15;
-        if (calendarIndex > numMFNWContent - 1) {
-          calendarIndex = 0;
-        }
+        waitingLayout = new _5x3_Layout();
       }
-      */
     }
     
     public function refillWaitingContentViews():void {
@@ -215,28 +177,14 @@ package socialGrid.controllers {
       var contentView:ContentView;
       
       while (!contentView) {
-        switch (Math.floor(Math.random() * 2)) {
-          case 0:
-            // make it a 2x1
-            contentView = ContentHelper.createContentView(
-              new ContentQuery({size:'2x1'}),
-              '2x1',
-              ContentHelper.getDisplayTimeBySize('2x1')
-            );
-            break;
-          case 1:
-            // make it a 2x2 with preferred instagram
-            contentQuery = new ContentQuery({contentType:'instagram', size:'2x2'});
-            contentQuery.secondaryParamQueue.push({matchDisplayedContent:true});
-            contentQuery.secondaryParamQueue.push({contentType:'mfnw'});
-            contentQuery.secondaryParamQueue.push({contentType:'any'});
-            contentView = ContentHelper.createContentView(
-              contentQuery,
-              '2x2',
-              ContentHelper.getDisplayTimeBySize('2x2')
-            );
-            break;
-        }
+        // make it a 2x2 with preferred instagram
+        contentQuery = new ContentQuery({size:'2x2'});
+        contentQuery.secondaryParamQueue.push({matchDisplayedContent:true});
+        contentView = ContentHelper.createContentView(
+          contentQuery,
+          '2x2',
+          ContentHelper.getDisplayTimeBySize('2x2')
+        );
       }
       
       waitingSpecialContentViews.push(contentView);
@@ -254,12 +202,11 @@ package socialGrid.controllers {
         contentView.isInterstitialPiece = true;
         bmd.dispose();
       } else {
-        switch (Math.floor(Math.random() * 7)) {
+        switch (RandomHelper.getWeightedIndex([1, 4, 2])) {
           case 0:
             // prefer twitter
             contentQuery = new ContentQuery({contentType:'twitter', size:'1x1'});
             contentQuery.secondaryParamQueue.push({matchDisplayedContent:true});
-            contentQuery.secondaryParamQueue.push({contentType:'instagram'});
             contentQuery.secondaryParamQueue.push({contentType:'any'});
             contentView = ContentHelper.createContentView(
               contentQuery,
@@ -268,16 +215,20 @@ package socialGrid.controllers {
             );
             break;
           case 1:
-          case 2:
-          case 3:
-          case 4:
-          case 5:
-          case 6:
-            // prefer instagram or mfnw
+            // prefer instagram
             contentQuery = new ContentQuery({contentType:'instagram', size:'1x1'});
             contentQuery.secondaryParamQueue.push({matchDisplayedContent:true});
-            contentQuery.secondaryParamQueue.push({contentType:'mfnw'});
             contentQuery.secondaryParamQueue.push({contentType:'any'});
+            contentView = ContentHelper.createContentView(
+              contentQuery,
+              '1x1',
+              ContentHelper.getDisplayTimeBySize('1x1')
+            );
+            break;
+          case 2:
+            // no preference
+            contentQuery = new ContentQuery({size:'1x1'});
+            contentQuery.secondaryParamQueue.push({matchDisplayedContent:true});
             contentView = ContentHelper.createContentView(
               contentQuery,
               '1x1',
