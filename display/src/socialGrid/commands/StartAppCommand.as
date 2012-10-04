@@ -17,9 +17,6 @@ package socialGrid.commands {
       // show test view
       //Locator.instance.ui.showTestView();
       
-      // show debug view
-      //Locator.instance.ui.showDebugView();
-      
       // start cycling content
       Locator.instance.contentCycleController.start();
       

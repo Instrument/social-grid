@@ -15,6 +15,12 @@ package socialGrid.views {
       
       gridView = new GridView();
       addChild(gridView);
+      
+      // show debug view
+      //showDebugView();
+      
+      // show content visualization view
+      //showContentVisualizationView();
     }
     
     public function hideLoadingView():void {
@@ -23,12 +29,16 @@ package socialGrid.views {
       }
     }
     
-    public function showDebugView():void {
+    public function showTestView():void {
+      addChild(new TestView());
+    }
+    
+    protected function showDebugView():void {
       addChild(new DebugView());
     }
     
-    public function showTestView():void {
-      addChild(new TestView());
+    protected function showContentVisualizationView():void {
+      addChild(new ContentVisualizationView());
     }
   }
 }

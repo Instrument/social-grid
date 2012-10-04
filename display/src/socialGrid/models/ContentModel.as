@@ -12,13 +12,10 @@ package socialGrid.models {
     
     public var contentVOs:Array;
     
-    public var activeContentVOs:Array;
-    
     public var removedPostIds:Array;
     
     public function ContentModel() {
        contentVOs = new Array();
-       activeContentVOs = new Array();
        removedPostIds = new Array();
     }
     
@@ -49,13 +46,11 @@ package socialGrid.models {
     // CHECK IN AND OUT
     
     public function checkoutContentVO(contentVO:BaseContentVO):void {
-      // add to active content vos
-      ArrayHelper.addItemToArray(contentVO, activeContentVOs);
+      contentVO.isActive = true;
     }
     
     public function checkinContentVO(contentVO:BaseContentVO):void {
-      // remove from active content vos
-      ArrayHelper.removeItemFromArray(contentVO, activeContentVOs);
+      contentVO.isActive = false;
       
       // check to see if it's blacklisted
       if (checkRemovedPostIdsForContentVO(contentVO)) {
@@ -91,7 +86,7 @@ package socialGrid.models {
       return contentVO;
     }
     
-    protected function getContentVOs(contentQuery:ContentQuery):Array {
+    public function getContentVOs(contentQuery:ContentQuery):Array {
       
       var matches:Array = new Array();
       var contentVO:BaseContentVO;
@@ -99,7 +94,7 @@ package socialGrid.models {
         // elimination
         if (
           // active
-          (!contentQuery.matchActiveContent && activeContentVOs.indexOf(contentVO) != -1) ||
+          (!contentQuery.matchActiveContent && contentVO.isActive) ||
           // content type (single)
           (contentQuery.contentType != 'any' && contentVO.contentType != contentQuery.contentType) ||
           // not type (single)
@@ -149,7 +144,7 @@ package socialGrid.models {
     }
     
     protected function deleteContentVO(contentVO:BaseContentVO):void {
-      if (activeContentVOs.indexOf(contentVO) != -1) { return; } // can't remove it if it's active
+      if (contentVO.isActive) { return; } // can't remove it if it's active
       
       // [(!)] actually remove contentVO, clean up memory
       contentVO.unrender();

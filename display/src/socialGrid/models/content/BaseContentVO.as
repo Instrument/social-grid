@@ -9,6 +9,8 @@ package socialGrid.models.content {
     
     public var contentType:String;
     
+    public var isActive:Boolean; // whether this content is currently being displayed or in line to be displayed
+    
     public var hasBeenDisplayed:Boolean; // whether this content has been displayed
     public var timeDisplayed:Number; // when this content was displayed
     

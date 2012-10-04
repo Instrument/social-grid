@@ -63,8 +63,8 @@ package socialGrid.models {
 
       pullSocialDirectly = getXmlBoolean('pullSocialDirectly', true);
       
-      twitterHashtags = getXmlArray('twitterHashtags', ['instrumentoutpost']);
-      instagramHashtags = getXmlArray('instagramHashtags', ['instrumentoutpost']);
+      twitterHashtags = getXmlArray('twitterHashtags', []);
+      instagramHashtags = getXmlArray('instagramHashtags', []);
       
       backendRoot = getXmlString('backendRoot', 'http://ec2-50-112-66-228.us-west-2.compute.amazonaws.com:1337');
     }

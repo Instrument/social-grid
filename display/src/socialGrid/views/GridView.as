@@ -23,18 +23,19 @@ package socialGrid.views {
       
       pendingTransitionViews = new Array();
       
-      // create first one
-      createTransitionViewAt(2, 1);
+      var gridWidth:int = 5;
+      var gridHeight:int = 3;
+      var numTiles:int = gridWidth * gridHeight;
+      
+      // create first one in middle
+      createTransitionViewAt(Math.floor(0.5 * gridWidth), Math.floor(0.5 * gridHeight));
       
       // layout others in outward pattern to ensure correct display order:
-      // 4 3 2 3 4
-      // 3 2 1 2 3
-      // 4 3 2 3 4
       var gridX:int;
       var gridY:int;
       var nextBatchCoordinates:Array;
       var nextBatchObj:Object;
-      while (transitionViews.length < 15) {
+      while (transitionViews.length < numTiles) {
         nextBatchCoordinates = new Array();
         
         // iterate over grid
@@ -69,6 +70,7 @@ package socialGrid.views {
     }
     
     protected function createTransitionViewAt(gridX:int, gridY:int):void {
+      //trace('creating transition view at ' + gridX + ', ' + gridY);
       var transitionView:TransitionView = new TransitionView();
       transitionViews.push(transitionView);
       addChildAt(transitionView, 0); // adds from bottom of display
