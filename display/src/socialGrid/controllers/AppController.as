@@ -41,7 +41,7 @@ package socialGrid.controllers {
       var command:BaseCommand = commandsByEvent[e.type];
       
       if (!command.isExecuting) {
-        trace("executing command: " + command);
+        //trace("executing command: " + command);
         command.execute(e);
       } else {
         //trace("command is already executing: " + command);

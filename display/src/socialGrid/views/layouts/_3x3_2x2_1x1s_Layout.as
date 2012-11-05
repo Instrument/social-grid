@@ -3,7 +3,7 @@ package socialGrid.views.layouts {
   import socialGrid.core.Locator;
   import socialGrid.util.ContentHelper;
   import socialGrid.util.ContentQuery;
-  import socialGrid.views.ContentView;
+  import socialGrid.views.contentViews.BaseContentView;
   
   public class _3x3_2x2_1x1s_Layout extends BaseLayout {
     
@@ -12,13 +12,9 @@ package socialGrid.views.layouts {
       var option3x3pos:int = Math.floor(Math.random() * 2);
       var option2x2pos:int = Math.floor(Math.random() * 2);
       
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       
-      contentView = ContentHelper.createContentView(
-        new ContentQuery({size:'3x3', index:'random'}),
-        '3x3',
-        ContentHelper.getDisplayTimeBySize('3x3')
-      );
+      contentView = ContentHelper.createContentViewFromQuery(new ContentQuery({size:'3x3'}), '3x3');
       if (contentView) {
         switch (option3x3pos) {
           case 0:
@@ -32,11 +28,7 @@ package socialGrid.views.layouts {
         contentViews.push(contentView);
       }
       
-      contentView = ContentHelper.createContentView(
-        new ContentQuery({size:'2x2', index:'random'}),
-        '2x2',
-        ContentHelper.getDisplayTimeBySize('2x2')
-      );
+      contentView = ContentHelper.createContentViewFromQuery(new ContentQuery({size:'2x2'}), '2x2');
       if (contentView) {
         switch (option3x3pos) {
           case 0:
@@ -57,11 +49,7 @@ package socialGrid.views.layouts {
         contentViews.push(contentView);
       }
       
-      contentView = ContentHelper.createContentView(
-        new ContentQuery({size:'1x1', notContentType:'twitter', index:'random'}),
-        '1x1',
-        ContentHelper.getDisplayTimeBySize('1x1')
-      );
+      contentView = ContentHelper.createContentViewFromQuery(new ContentQuery({size:'1x1'}), '1x1');
       if (contentView) {
         switch (option3x3pos) {
           case 0:
@@ -82,11 +70,7 @@ package socialGrid.views.layouts {
         contentViews.push(contentView);
       }
       
-      contentView = ContentHelper.createContentView(
-        new ContentQuery({size:'1x1', notContentType:'twitter', index:'random'}),
-        '1x1',
-        ContentHelper.getDisplayTimeBySize('1x1')
-      );
+      contentView = ContentHelper.createContentViewFromQuery(new ContentQuery({size:'1x1'}), '1x1');
       if (contentView) {
         switch (option3x3pos) {
           case 0:

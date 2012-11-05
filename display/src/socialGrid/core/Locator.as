@@ -1,18 +1,18 @@
-package socialGrid.core
-{
+package socialGrid.core {
+  
   import flash.events.EventDispatcher;
   
   import socialGrid.controllers.AppController;
   import socialGrid.controllers.ContentCycleController;
   import socialGrid.controllers.ContentDisplayController;
+  import socialGrid.controllers.PhotoboothImageSurveyController;
   import socialGrid.controllers.PostRecruitmentController;
   import socialGrid.controllers.PostsDirectLoadController;
   import socialGrid.controllers.PostsServiceLoadController;
   import socialGrid.models.AppModel;
   import socialGrid.views.UI;
   
-  public class Locator extends EventDispatcher
-  {
+  public class Locator extends EventDispatcher {
     
     private static var _instance:Locator;
     
@@ -23,6 +23,8 @@ package socialGrid.core
     public var postsServiceLoadController:PostsServiceLoadController;
     
     public var postRecruitmentController:PostRecruitmentController;
+    
+    public var photoboothImageSurveyController:PhotoboothImageSurveyController;
     
     public var contentDisplayController:ContentDisplayController;
     public var contentCycleController:ContentCycleController;
@@ -44,6 +46,8 @@ package socialGrid.core
         _instance.postsServiceLoadController = new PostsServiceLoadController();
         
         _instance.postRecruitmentController = new PostRecruitmentController();
+        
+        _instance.photoboothImageSurveyController = new PhotoboothImageSurveyController();
         
         _instance.contentDisplayController = new ContentDisplayController();
         _instance.contentCycleController = new ContentCycleController();

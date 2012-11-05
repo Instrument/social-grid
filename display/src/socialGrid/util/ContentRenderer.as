@@ -4,7 +4,9 @@ package socialGrid.util {
   import flash.utils.Dictionary;
   
   import socialGrid.models.content.BaseContentVO;
-  import socialGrid.models.content.UserContentVO;
+  import socialGrid.models.content.PhotoboothImageContentVO;
+  import socialGrid.models.content.UserImageContentVO;
+  import socialGrid.models.content.UserVideoContentVO;
   import socialGrid.views.templates.BaseGridTemplate;
   import socialGrid.views.templates.Instagram1x1Template;
   import socialGrid.views.templates.Instagram2x2Template;
@@ -34,7 +36,9 @@ package socialGrid.util {
       
       // for user content
       var sizeSplit:Array;
-      var userContentVO:UserContentVO;
+      var userImageContentVO:UserImageContentVO;
+      var userVideoContentVO:UserVideoContentVO;
+      var photoboothImageContentVO:PhotoboothImageContentVO;
       
       switch (contentVO.contentType) {
         case 'twitter':
@@ -44,11 +48,23 @@ package socialGrid.util {
           bmd = new BitmapData(template.gridWidth * 256, template.gridHeight * 256, true, 0x00000000);
           bmd.draw(template);
           break;
-        case 'user':
-          userContentVO = contentVO as UserContentVO;
+        case 'user_image':
+          userImageContentVO = contentVO as UserImageContentVO;
           sizeSplit = size.split('x');
           bmd = new BitmapData(sizeSplit[0] * 256, sizeSplit[1] * 256, true, 0x00000000);
-          bmd.draw(BitmapResizer.resizeBitmapData(userContentVO.imageData, sizeSplit[0] * 256, sizeSplit[1] * 256));
+          bmd.draw(BitmapResizer.resizeBitmapData(userImageContentVO.imageData, sizeSplit[0] * 256, sizeSplit[1] * 256));
+          break;
+        case 'user_video':
+          userVideoContentVO = contentVO as UserVideoContentVO;
+          sizeSplit = size.split('x');
+          bmd = new BitmapData(sizeSplit[0] * 256, sizeSplit[1] * 256, true, 0x00000000);
+          bmd.draw(BitmapResizer.resizeBitmapData(userVideoContentVO.metadata.firstFrame, sizeSplit[0] * 256, sizeSplit[1] * 256));
+          break;
+        case 'photobooth_image':
+          photoboothImageContentVO = contentVO as PhotoboothImageContentVO;
+          sizeSplit = size.split('x');
+          bmd = new BitmapData(sizeSplit[0] * 256, sizeSplit[1] * 256, true, 0x00000000);
+          bmd.draw(BitmapResizer.fitBitmapDataTo(photoboothImageContentVO.imageData, sizeSplit[0] * 256, sizeSplit[1] * 256));
           break;
       }
       

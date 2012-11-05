@@ -32,9 +32,7 @@ package socialGrid.util {
       var sec:int = int(matches[6]);
       var ms:int = int(matches[7]);
       
-      var date:Date = new Date(year, month, day, hour, min, sec, ms);
-      
-      return date.time;
+      return Date.UTC(year, month, day + 1, hour, min, sec, ms);
     }
     
     public static function getStandardTimeFromTimestamp(timestamp:Number):String {

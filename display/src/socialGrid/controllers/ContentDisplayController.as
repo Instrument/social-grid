@@ -2,14 +2,12 @@ package socialGrid.controllers {
   
   import flash.display.BitmapData;
   import flash.events.Event;
-  import flash.geom.Matrix;
   
   import socialGrid.core.Locator;
-  import socialGrid.models.content.BaseContentVO;
+  import socialGrid.models.programs.LayoutProgram;
   import socialGrid.util.ArrayHelper;
   import socialGrid.util.ContentHelper;
-  import socialGrid.views.ContentView;
-  import socialGrid.views.layouts.BaseLayout;
+  import socialGrid.views.contentViews.BaseContentView;
   
   public class ContentDisplayController {
     
@@ -37,7 +35,7 @@ package socialGrid.controllers {
       initialBmd.draw(Locator.instance.ui.loadingView);
       
       // create initial content view
-      var contentView:ContentView = ContentHelper.createNonContentView(initialBmd, '5x3', 1);
+      var contentView:BaseContentView = ContentHelper.createNonContentView(initialBmd, '5x3', 1);
       contentView.gridX = 0;
       contentView.gridY = 0;
       
@@ -57,8 +55,8 @@ package socialGrid.controllers {
       
       // define all varialbes used for iteration
       
-      var waitingContentView:ContentView; // the current waiting content view
-      var contentView:ContentView; // any other content view
+      var waitingContentView:BaseContentView; // the current waiting content view
+      var contentView:BaseContentView; // any other content view
       
       var numOpenTilesNeeded:int; // number of titles belonging to the current waiting content view
       
@@ -102,7 +100,7 @@ package socialGrid.controllers {
                     timeUntilTileOpen = 0;
                     locationTilesOpen++;
                   } else if (contentView.hasStarted) {
-                    timeUntilTileOpen = contentView.displayTime - (new Date().time - contentView.timeStarted);
+                    timeUntilTileOpen = contentView.getTimeUntilFinished();
                   } else {
                     timeUntilTileOpen = Number.POSITIVE_INFINITY;
                   }
@@ -179,7 +177,7 @@ package socialGrid.controllers {
       this.displayContentViews(replacementViews);
     }
     
-    protected function applyWaitingContentViewAt(waitingContentView:ContentView, gridX:int, gridY:int):void {
+    protected function applyWaitingContentViewAt(waitingContentView:BaseContentView, gridX:int, gridY:int):void {
       
       // remove waiting view from waiting views array
       ArrayHelper.removeItemFromArray(waitingContentView, Locator.instance.contentCycleController.waitingSpecialContentViews);
@@ -193,7 +191,7 @@ package socialGrid.controllers {
       
       // destroy overlapping content views
       var coordinateObj:Object;
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       for each (coordinateObj in destroyReplaceTilesCoordinateObj.tilesToDestroy) {
         contentView = getContentViewAt(coordinateObj.x, coordinateObj.y);
         if (contentView) {
@@ -224,7 +222,7 @@ package socialGrid.controllers {
     
     // DESTROY
     
-    public function destroyContentView(contentView:ContentView):void {
+    public function destroyContentView(contentView:BaseContentView):void {
       ArrayHelper.removeItemFromArray(contentView, currentContentViews);
       contentView.removeEventListener('content_view_displayed', contentViewDisplayedListener);
       
@@ -239,7 +237,7 @@ package socialGrid.controllers {
       
       // find views to replace
       var viewsToReplace:Array = new Array();
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       for each (contentView in currentContentViews) {
         if (contentView.hasDisplayed) {
           viewsToReplace.push(contentView);
@@ -256,7 +254,7 @@ package socialGrid.controllers {
       this.displayContentViews(replacementViews);
     }
     
-    protected function replaceContentView(oldContentView:ContentView, withInterstitials:Boolean = false):Array {
+    protected function replaceContentView(oldContentView:BaseContentView, withInterstitials:Boolean = false):Array {
       
       // make note of old content view properties
       var oldGridX:int = oldContentView.gridX;
@@ -288,12 +286,12 @@ package socialGrid.controllers {
     
     // DISPLAY
     
-    protected function displayContentView(contentView:ContentView, timeFactor:Number = 1):void {
+    protected function displayContentView(contentView:BaseContentView, timeFactor:Number = 1):void {
       displayContentViews([contentView], timeFactor);
     }
     
     protected function displayContentViews(contentViews:Array, timeFactor:Number = 1):void {
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       for each (contentView in contentViews) {
         // add to current views array
         currentContentViews.push(contentView);
@@ -311,7 +309,7 @@ package socialGrid.controllers {
       
       // get list of views that are done
       var displayedContentViews:Array = new Array();
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       for each (contentView in currentContentViews) {
         if (contentView.hasDisplayed) {
           displayedContentViews.push(contentView);
@@ -339,10 +337,10 @@ package socialGrid.controllers {
           // replace all non-interstitial finished views with interstitials
           replacementViews = new Array();
           for each (contentView in displayedContentViews) {
-          if (!contentView.isInterstitialPiece) {
-            replacementViews = replacementViews.concat(replaceContentView(contentView, true));
+            if (contentView.contentViewType != 'interstitial') {
+              replacementViews = replacementViews.concat(replaceContentView(contentView, true));
+            }
           }
-        }
           displayContentViews(replacementViews);
           break;
         case 'layout':
@@ -354,7 +352,7 @@ package socialGrid.controllers {
     
     protected function applyWaitingLayout():void {
       
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       
       // clear all current content views
       var viewsToDestroy:Array = new Array();
@@ -368,8 +366,20 @@ package socialGrid.controllers {
       // display all content views belonging to layout
       displayContentViews(Locator.instance.contentCycleController.waitingLayout.contentViews);
       
-      // destroy waiting content view
+      // destroy waiting layout
       Locator.instance.contentCycleController.waitingLayout = null; // [(!)] memory?
+      
+      // flag layout has been applied
+      var layoutProgram:LayoutProgram = Locator.instance.contentCycleController.currentProgram as LayoutProgram;
+      layoutProgram.layoutHasBeenApplied = true;
+    }
+    
+    public function displayActualInterstitialView():void {
+      var contentView:BaseContentView = Locator.instance.contentCycleController.currentContentViewForInterstitial;
+      Locator.instance.contentCycleController.currentContentViewForInterstitial = null;
+      if (contentView) {
+        displayContentView(contentView, 0);
+      }
     }
     
     
@@ -379,7 +389,7 @@ package socialGrid.controllers {
       var numOpen:int = 0;
       var gridX:int;
       var gridY:int;
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       for (gridY = 0; gridY < 3; gridY++) {
         for (gridX = 0; gridX < 5; gridX++) {
           contentView = getContentViewAt(gridX, gridY);
@@ -393,17 +403,17 @@ package socialGrid.controllers {
     
     public function getNumFinishedInterstitialTiles():int {
       var numFinishedInterstitial:int = 0;
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       for each (contentView in currentContentViews) {
-        if (contentView && contentView.isInterstitialPiece && contentView.hasDisplayed) {
+        if (contentView && contentView.hasDisplayed && contentView.contentViewType == 'interstitial') {
           numFinishedInterstitial++;
         }
       }
       return numFinishedInterstitial;
     }
     
-    public function getContentViewAt(gridX:int, gridY:int):ContentView {
-      var contentView:ContentView;
+    public function getContentViewAt(gridX:int, gridY:int):BaseContentView {
+      var contentView:BaseContentView;
       for each (contentView in currentContentViews) {
         if (contentViewCoordinateTest(contentView, gridX, gridY)) {
           return contentView;
@@ -412,20 +422,20 @@ package socialGrid.controllers {
       return null;
     }
     
-    protected function contentViewCoordinateTest(contentView:ContentView, gridX:int, gridY:int):Boolean {
+    protected function contentViewCoordinateTest(contentView:BaseContentView, gridX:int, gridY:int):Boolean {
       return  contentView.gridX <= gridX &&
         contentView.gridX + contentView.gridWidth - 1 >= gridX &&
         contentView.gridY <= gridY &&
         contentView.gridY + contentView.gridHeight - 1 >= gridY;
     }
     
-    protected function findOverlappingViews(incomingContentView:ContentView):Object {
+    protected function findOverlappingViews(incomingContentView:BaseContentView):Object {
       
       // find all overlapping content views
       var overlappingContentViews:Array = new Array();
       var gridX:int;
       var gridY:int;
-      var overlappingContentView:ContentView;
+      var overlappingContentView:BaseContentView;
       for (gridY = incomingContentView.gridY; gridY < incomingContentView.gridY + incomingContentView.gridHeight; gridY++) {
         for (gridX = incomingContentView.gridX; gridX < incomingContentView.gridX + incomingContentView.gridWidth; gridX++) {
           overlappingContentView = getContentViewAt(gridX, gridY);
@@ -460,7 +470,8 @@ package socialGrid.controllers {
     // EVENT LISTENERS
     
     protected function contentViewDisplayedListener(e:Event):void {
-      var contentView:ContentView = e.currentTarget as ContentView;
+      
+      var contentView:BaseContentView = e.currentTarget as BaseContentView;
       
       // check current program for being ready to start or finish
       Locator.instance.contentCycleController.onTilesOpen();

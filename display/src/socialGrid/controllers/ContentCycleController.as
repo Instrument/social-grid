@@ -1,13 +1,10 @@
 package socialGrid.controllers {
   
   import flash.display.BitmapData;
-  import flash.events.Event;
   import flash.geom.Matrix;
   import flash.utils.Dictionary;
   
   import socialGrid.core.Locator;
-  import socialGrid.models.content.BaseContentVO;
-  import socialGrid.models.content.UserContentVO;
   import socialGrid.models.programs.BaseProgram;
   import socialGrid.models.programs.InterstitialProgram;
   import socialGrid.models.programs.LayoutProgram;
@@ -15,10 +12,11 @@ package socialGrid.controllers {
   import socialGrid.util.ContentHelper;
   import socialGrid.util.ContentQuery;
   import socialGrid.util.RandomHelper;
-  import socialGrid.views.ContentView;
+  import socialGrid.views.contentViews.BaseContentView;
   import socialGrid.views.layouts.BaseLayout;
   import socialGrid.views.layouts._3x3_2x2_1x1s_Layout;
-  import socialGrid.views.layouts._5x3_Layout;
+  import socialGrid.views.layouts._5x3_ImageLayout;
+  import socialGrid.views.layouts._5x3_VideoLayout;
   
   public class ContentCycleController {
     
@@ -35,6 +33,7 @@ package socialGrid.controllers {
     
     public var currentTransitionDirection:String;
     
+    public var currentContentViewForInterstitial:BaseContentView;
     protected var currentInterstitialBmd:BitmapData;
     
     protected var calendarIndex:int;
@@ -50,8 +49,8 @@ package socialGrid.controllers {
     }
     
     public function start():void {
-      var program:BaseProgram = programs['random'];
-      //makeWaitingLayout();
+      var program:BaseProgram = programs['layout'];
+      makeWaitingLayout();
       program.init();
       startProgram(program);
     }
@@ -133,13 +132,12 @@ package socialGrid.controllers {
     
     // called when interstitial program starts
     public function chooseInterstitial():void {
-      
-      // [(!)] randomize this
-      
-      var userContentVO:UserContentVO = Locator.instance.appModel.contentModel.getContentVO(new ContentQuery({size:'5x3'})) as UserContentVO;
-      if (userContentVO) {
-        currentInterstitialBmd = userContentVO.imageData;
+      var contentQuery:ContentQuery = new ContentQuery({size:'5x3'});
+      currentContentViewForInterstitial = ContentHelper.createContentViewFromQuery(contentQuery, '5x3');
+      if (currentContentViewForInterstitial) {
+        currentInterstitialBmd = currentContentViewForInterstitial.bitmapData;
       } else {
+        trace('no interstitial content available');
         currentInterstitialBmd = new BitmapData(1280, 768, true, 0xff000000);
       }
     }
@@ -150,9 +148,17 @@ package socialGrid.controllers {
     public function makeWaitingLayout():void {
       if (waitingLayout) { return; }
       
-      waitingLayout = new _3x3_2x2_1x1s_Layout();
+      switch (RandomHelper.getWeightedIndex([3, 1])) {
+        case 0:
+          waitingLayout = new _3x3_2x2_1x1s_Layout();
+          break;
+        case 1:
+          waitingLayout = new _5x3_ImageLayout();
+          break;
+      }
       
-      var contentView:ContentView;
+      // backup
+      var contentView:BaseContentView;
       if (!waitingLayout || !waitingLayout.hasContent) {
         if (waitingLayout) {
           // destroy the content views belonging to it
@@ -160,84 +166,67 @@ package socialGrid.controllers {
             ContentHelper.destroyContentView(contentView);
           }
         }
-        
-        waitingLayout = new _5x3_Layout();
+        waitingLayout = new _5x3_VideoLayout();
       }
     }
     
     public function refillWaitingContentViews():void {
-      while (waitingSpecialContentViews.length < 1) {
+      var numAttempts:int = 0;
+      while (numAttempts < 1 && waitingSpecialContentViews.length < 1) {
         makeWaitingContentView();
+        numAttempts++;
       }
     }
     
     protected function makeWaitingContentView():void {
-      
-      var contentQuery:ContentQuery;
-      var contentView:ContentView;
-      
-      while (!contentView) {
-        // make it a 2x2 with preferred instagram
-        contentQuery = new ContentQuery({size:'2x2'});
-        contentQuery.secondaryParamQueue.push({matchDisplayedContent:true});
-        contentView = ContentHelper.createContentView(
-          contentQuery,
-          '2x2',
-          ContentHelper.getDisplayTimeBySize('2x2')
-        );
+      var contentQuery:ContentQuery = new ContentQuery({size:'2x2'});
+      var contentView:BaseContentView = ContentHelper.createContentViewFromQuery(contentQuery, '2x2');
+      if (contentView) {
+        waitingSpecialContentViews.push(contentView);
+      } else {
+        trace('cannot make waiting content view');
       }
-      
-      waitingSpecialContentViews.push(contentView);
     }
     
-    public function createContentViewAt(gridX:int, gridY:int, withInterstitial:Boolean = false):ContentView {
+    public function createContentViewAt(gridX:int, gridY:int, withInterstitial:Boolean = false):BaseContentView {
       
       var contentQuery:ContentQuery;
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       
       if (withInterstitial) {
         var bmd:BitmapData = new BitmapData(256, 256, true, 0xffffffff);
         bmd.draw(currentInterstitialBmd, new Matrix(1, 0, 0, 1, -256 * gridX, -256 * gridY));
-        contentView = ContentHelper.createNonContentView(bmd, '1x1', 500);
-        contentView.isInterstitialPiece = true;
+        contentView = ContentHelper.createInterstitialContentView(bmd, '1x1');
         bmd.dispose();
       } else {
-        switch (RandomHelper.getWeightedIndex([1, 4, 2])) {
+        switch (RandomHelper.getWeightedIndex([1, 4, 1, 2])) {
           case 0:
             // prefer twitter
             contentQuery = new ContentQuery({contentType:'twitter', size:'1x1'});
-            contentQuery.secondaryParamQueue.push({matchDisplayedContent:true});
-            contentQuery.secondaryParamQueue.push({contentType:'any'});
-            contentView = ContentHelper.createContentView(
-              contentQuery,
-              '1x1',
-              ContentHelper.getDisplayTimeBySize('1x1')
-            );
             break;
           case 1:
             // prefer instagram
             contentQuery = new ContentQuery({contentType:'instagram', size:'1x1'});
-            contentQuery.secondaryParamQueue.push({matchDisplayedContent:true});
-            contentQuery.secondaryParamQueue.push({contentType:'any'});
-            contentView = ContentHelper.createContentView(
-              contentQuery,
-              '1x1',
-              ContentHelper.getDisplayTimeBySize('1x1')
-            );
             break;
           case 2:
+            // prefer video
+            contentQuery = new ContentQuery({contentType:'user_video', size:'1x1'});
+            break;
+          case 3:
             // no preference
             contentQuery = new ContentQuery({size:'1x1'});
-            contentQuery.secondaryParamQueue.push({matchDisplayedContent:true});
-            contentView = ContentHelper.createContentView(
-              contentQuery,
-              '1x1',
-              ContentHelper.getDisplayTimeBySize('1x1')
-            );
             break;
+        }
+        contentView = ContentHelper.createContentViewFromQuery(contentQuery, '1x1');
+        
+        // backup
+        if (!contentView) {
+          contentQuery = new ContentQuery({size:'1x1'});
+          contentView = ContentHelper.createContentViewFromQuery(contentQuery, '1x1');
         }
       }
       
+      // set coordinates
       contentView.gridX = gridX;
       contentView.gridY = gridY;
       

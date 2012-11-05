@@ -1,65 +1,53 @@
 package socialGrid.util {
-  import socialGrid.models.content.BaseContentVO;
   
   public class ContentQuery {
     
-    // QUERY PARAMS
+    // query params
     
     public var matchActiveContent:Boolean; // whether to match content that is being actively diplayed
-    public var matchDisplayedContent:Boolean; // whether to match content that has already been displayed
+    public var favorLeastDisplayedContent:Boolean; // whether to favor content that has been displayed least number of times
     
     public var size:String;
-    public var contentType:String;
-    public var notContentType:String;
+    public var contentType:String; // type of content to match
+    public var notContentType:String; // type of content to avoid
     
     public var random:Boolean; // when returning just one match, whether to pick randomly
     public var index:int;
     
-    // RECURSIVE SECONDARY PARAMS
+    // recursive secondary params
     
-    public var secondaryParamQueue:Array;
+    public var secondaryParamQueue:Array; // sequential query options to try if initial query doesn't return any matches
     
     public function ContentQuery(params:Object = null) {
-      // defaults
-      matchActiveContent = false;
-      matchDisplayedContent = false;
-      
-      size = 'any';
-      contentType = 'any';
-      notContentType = 'none';
-      
-      random = true;
-      index = -1;
       
       secondaryParamQueue = new Array();
       
-      // params
+      // defaults
+      matchActiveContent = false;
+      favorLeastDisplayedContent = true;
+      size = 'any';
+      contentType = 'any';
+      notContentType = 'none';
+      random = true;
+      index = -1;
+      
+      // apply params
       if (params) {
         parseParams(params);
       }
+      
+      // default to match active content as backup
+      //secondaryParamQueue.push({matchActiveContent:true});
     }
     
     public function parseParams(params:Object):void {
-      if (params.hasOwnProperty('matchActiveContent')) {
-        matchActiveContent = params.matchActiveContent;
-      }
-      if (params.hasOwnProperty('matchDisplayedContent')) {
-        matchDisplayedContent = params.matchDisplayedContent;
-      }
-      if (params.hasOwnProperty('size')) {
-        size = params.size;
-      }
-      if (params.hasOwnProperty('contentType')) {
-        contentType = params.contentType;
-      }
-      if (params.hasOwnProperty('notContentType')) {
-        notContentType = params.notContentType;
-      }
-      if (params.hasOwnProperty('random')) {
-        random = params.random;
-      }
-      if (params.hasOwnProperty('index')) {
-        index = params.index;
+      var paramName:String;
+      for(paramName in params) {
+        if (this.hasOwnProperty(paramName)) {
+          this[paramName] = params[paramName];
+        } else {
+          trace('cannot interpret content query param ' + paramName);
+        }
       }
     }
   }

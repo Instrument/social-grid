@@ -2,7 +2,7 @@ package socialGrid.util.assetLoader {
   
   public class BaseAssetLoaderItem {
     
-    public var loaderType:Class; // URLLoader for files or Loader for images, etc.
+    public var loaderType:String;
     public var url:String;
     
     public function BaseAssetLoaderItem() {}

@@ -23,6 +23,9 @@ package socialGrid.commands {
       // starts displaying content
       Locator.instance.contentDisplayController.start();
       
+      // starts looking for photobooth content
+      Locator.instance.photoboothImageSurveyController.start();
+      
       Locator.instance.appModel.appReady = true;
       onComplete();
     }

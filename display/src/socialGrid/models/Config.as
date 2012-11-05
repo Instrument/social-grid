@@ -16,6 +16,10 @@ package socialGrid.models {
     public var twitterHighlightColor:uint;
     public var twitterBackgroundColor:uint;
     
+    public var largeTwitterTextColor:uint;
+    public var largeTwitterHighlightColor:uint;
+    public var largeTwitterBackgroundColor:uint;
+    
     public var instagramTextColor:uint;
     public var instagramHighlightColor:uint;
     
@@ -25,6 +29,8 @@ package socialGrid.models {
     public var instagramHashtags:Array;
     
     public var backendRoot:String;
+    
+    public var photoboothFolderPath:String;
     
     public function Config() {}
     
@@ -38,20 +44,32 @@ package socialGrid.models {
       loadingTextColor = getXmlColor('loadingTextColor', 0x080808);
       setStyleColor('.app-loading-text', loadingTextColor);
       
+      // twitter
+      
       twitterTextColor = getXmlColor('twitterTextColor', 0x7c7c7c);
       setStyleColor('.twitter-text', twitterTextColor);
       setStyleColor('.twitter-author', twitterTextColor);
       setStyleColor('.twitter-meta', twitterTextColor);
-      setStyleColor('.twitter-3x3-text', twitterTextColor);
-      setStyleColor('.twitter-3x3-author', twitterTextColor);
-      setStyleColor('.twitter-3x3-meta', twitterTextColor);
       
       twitterHighlightColor = getXmlColor('twitterHighlightColor', 0x1babbe);
       setStyleColor('.twitter-text-highlight', twitterHighlightColor);
-      setStyleColor('.twitter-3x3-text-highlight', twitterHighlightColor);
-      setStyleColor('.twitter-3x3-meta-highlight', twitterHighlightColor);
       
       twitterBackgroundColor = getXmlColor('twitterBackgroundColor', 0xf2f2f2);
+      
+      // large twitter
+      
+      largeTwitterTextColor = getXmlColor('largeTwitterTextColor', 0x7c7c7c);
+      setStyleColor('.twitter-3x3-text', largeTwitterTextColor);
+      setStyleColor('.twitter-3x3-author', largeTwitterTextColor);
+      setStyleColor('.twitter-3x3-meta', largeTwitterTextColor);
+      
+      largeTwitterHighlightColor = getXmlColor('largeTwitterHighlightColor', 0x1babbe);
+      setStyleColor('.twitter-3x3-text-highlight', largeTwitterHighlightColor);
+      setStyleColor('.twitter-3x3-meta-highlight', largeTwitterHighlightColor);
+      
+      largeTwitterBackgroundColor = getXmlColor('largeTwitterBackgroundColor', 0xf2f2f2);
+      
+      // instagram
       
       instagramTextColor = getXmlColor('instagramTextColor', 0xf2f2f2);
       setStyleColor('.instagram-meta', instagramTextColor);
@@ -67,6 +85,8 @@ package socialGrid.models {
       instagramHashtags = getXmlArray('instagramHashtags', []);
       
       backendRoot = getXmlString('backendRoot', 'http://ec2-50-112-66-228.us-west-2.compute.amazonaws.com:1337');
+      
+      photoboothFolderPath = getXmlString('photoboothFolderPath', 'resources/photobooth');
     }
     
     protected function setStyleColor(styleName:String, color:uint):void {
@@ -88,7 +108,7 @@ package socialGrid.models {
     protected function getXmlBoolean(paramName:String, defaultValue:Boolean):Boolean {
       var valueString:String = getXmlParam(paramName);
       if (valueString) {
-        return(Boolean(valueString));
+        return(valueString == 'true');
       } else {
         return defaultValue;
       }

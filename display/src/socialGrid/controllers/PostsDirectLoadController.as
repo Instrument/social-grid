@@ -14,7 +14,7 @@ package socialGrid.controllers {
   public class PostsDirectLoadController {
     
     protected var loadTimer:Timer;
-    protected var postsLoaders:Array;
+    public var postsLoaders:Array;
     protected var loadIndex:int;
     
     public function PostsDirectLoadController() {

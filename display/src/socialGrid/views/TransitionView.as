@@ -15,10 +15,13 @@ package socialGrid.views {
   import flash.utils.ByteArray;
   
   import socialGrid.assets.SocialGridAssets;
+  import socialGrid.views.contentViews.BaseContentView;
   
   public class TransitionView extends Sprite {
     
     public var transitionDirection:String;
+    
+    public var isTransitioning:Boolean;
     
     public var gridX:int;
     public var gridY:int;
@@ -43,7 +46,7 @@ package socialGrid.views {
     protected var inBmp2Shader:Shader;
     protected var inBmp2ShaderFilter:ShaderFilter;
     
-    public var contentView:ContentView;
+    public var contentView:BaseContentView;
     
     protected var percentTransition:Number;
     
@@ -165,6 +168,8 @@ package socialGrid.views {
     
     public function transition(timeFactor:Number = 1, delay:Number = 0):void {
       
+      isTransitioning = true;
+      
       outBmp1.bitmapData.draw(outTransBmd, new Matrix(1, 0, 0, 1, 0, 0));
       outBmp2.bitmapData.draw(outTransBmd, new Matrix(1, 0, 0, 1, -128, 0));
       
@@ -195,6 +200,7 @@ package socialGrid.views {
     }
     
     protected function onTransitionComplete():void {
+      isTransitioning = false;
       dispatchEvent(new Event('transition_view_complete'));
     }
     

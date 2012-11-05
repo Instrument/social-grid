@@ -6,14 +6,15 @@ package socialGrid.views {
   import flash.events.Event;
   import flash.geom.Matrix;
   import flash.geom.Rectangle;
+  import socialGrid.views.contentViews.BaseContentView;
   
   public class GridView extends Sprite {
     
-    protected var bmp:Bitmap; // bitmap which content is drawn to
+    public var bmp:Bitmap; // bitmap which content is drawn to
     
     protected var transitionViews:Array;
     
-    protected var pendingTransitionViews:Array;
+    protected var pendingTransitionViews:Array; // for cascading
     
     protected var transitionDirection:String;
     
@@ -81,7 +82,7 @@ package socialGrid.views {
       transitionView.addEventListener('transition_view_complete', transitionViewCompleteListener);
     }
     
-    protected function getTransitionViewAt(gridX:int, gridY:int):TransitionView {
+    public function getTransitionViewAt(gridX:int, gridY:int):TransitionView {
       var transitionView:TransitionView;
       for each (transitionView in transitionViews) {
         if (transitionView.gridX == gridX && transitionView.gridY == gridY) {
@@ -102,7 +103,7 @@ package socialGrid.views {
     public function displayContentViews(contentViews:Array, timeFactor:Number= 1):void {
       
       // prepare
-      var contentView:ContentView;
+      var contentView:BaseContentView;
       for each (contentView in contentViews) {
         prepareTransitionViewsForContentView(contentView);
       }
@@ -111,7 +112,7 @@ package socialGrid.views {
       cascadePendingTransitionViews(timeFactor);
     }
     
-    public function displayContentView(contentView:ContentView, timeFactor:Number = 1):void {
+    public function displayContentView(contentView:BaseContentView, timeFactor:Number = 1):void {
       
       // prepare
       prepareTransitionViewsForContentView(contentView);
@@ -120,7 +121,7 @@ package socialGrid.views {
       cascadePendingTransitionViews(timeFactor);
     }
     
-    protected function prepareTransitionViewsForContentView(contentView:ContentView):void {
+    protected function prepareTransitionViewsForContentView(contentView:BaseContentView):void {
       // find transition views needed for the transition
       var relevantTransitionViews:Array = new Array();
       var gridX:int;
@@ -215,6 +216,10 @@ package socialGrid.views {
     
     protected function transitionViewCompleteListener(e:Event):void {
       var transitionView:TransitionView = e.currentTarget as TransitionView;
+      
+      if (transitionView.contentView.contentViewType == 'user_video') {
+        trace('transition view done ' + transitionView.gridX + ' ' + transitionView.gridY);
+      }
       
       bmp.bitmapData.draw(transitionView.incomingBmd, new Matrix(1, 0, 0, 1, 256 * transitionView.gridX, 256 * transitionView.gridY));
       transitionView.visible = false;

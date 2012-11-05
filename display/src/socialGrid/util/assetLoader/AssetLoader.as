@@ -8,11 +8,15 @@ package socialGrid.util.assetLoader {
   import flash.net.URLRequest;
   import flash.utils.Dictionary;
   
+  import socialGrid.util.VideoPlayer;
+  import socialGrid.util.VideoMetadata;
+  
   public class AssetLoader extends EventDispatcher {
-
+    
     protected var loader:Loader;
     protected var urlLoader:URLLoader;
-    protected var loaderDictionary:Dictionary;
+    protected var videoPlayer:VideoPlayer;
+    
     
     public var loaderItems:Array;
     public var loaderItemIndex:int;
@@ -20,17 +24,17 @@ package socialGrid.util.assetLoader {
     
     public function AssetLoader() {
       
-      loaderDictionary = new Dictionary();
-      
       loader = new Loader();
-      loaderDictionary[Loader] = loader;
       loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loaderCompleteListener);
       loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, loaderErrorListener);
       
       urlLoader = new URLLoader();
-      loaderDictionary[URLLoader] = urlLoader;
       urlLoader.addEventListener(Event.COMPLETE, urlLoaderCompleteListener);
       urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoaderErrorListener);
+      
+      videoPlayer = new VideoPlayer();
+      videoPlayer.addEventListener('video_metadata', videoPlayerMetadataListener);
+      videoPlayer.addEventListener('video_error', videoPlayerErrorListener);
       
       loaderItems = new Array();
     }
@@ -48,8 +52,21 @@ package socialGrid.util.assetLoader {
     
     protected function loadNext():void {
       if (loaderItemIndex < loaderItems.length) {
+        
         var loaderItem:BaseAssetLoaderItem = loaderItems[loaderItemIndex];
-        loaderDictionary[loaderItem.loaderType].load(new URLRequest(loaderItem.url));
+        
+        switch (loaderItem.loaderType) {
+          case 'image':
+            loader.load(new URLRequest(loaderItem.url));
+            break;
+          case 'text':
+            urlLoader.load(new URLRequest(loaderItem.url));
+            break;
+          case 'video':
+            videoPlayer.load(loaderItem.url);
+            break;
+        }
+        
       } else {
         // loading is finished
         loaderItems = new Array(); // [(!)] clean up memory?
@@ -81,6 +98,20 @@ package socialGrid.util.assetLoader {
     }
     
     protected function urlLoaderErrorListener(e:IOErrorEvent):void {
+      var loaderItem:BaseAssetLoaderItem = loaderItems[loaderItemIndex];
+      loaderItem.onLoadFailure();
+      dispatchEvent(new Event('asset_loader_failure'));
+    }
+    
+    protected function videoPlayerMetadataListener(e:Event):void {
+      var loaderItem:BaseAssetLoaderItem = loaderItems[loaderItemIndex];
+      loaderItem.onLoadSuccess(videoPlayer.metadata);
+      loaderItemIndex++;
+      dispatchEvent(new Event('asset_loader_progress'));
+      loadNext();
+    }
+    
+    protected function videoPlayerErrorListener(e:Event):void {
       var loaderItem:BaseAssetLoaderItem = loaderItems[loaderItemIndex];
       loaderItem.onLoadFailure();
       dispatchEvent(new Event('asset_loader_failure'));

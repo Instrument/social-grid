@@ -24,6 +24,9 @@ package socialGrid.assets {
     
     // images
     
+    [Embed (source="../../embed/images/shade768.png" )]
+    public static var shade768:Class;
+    
     [Embed (source="../../embed/images/vignette512.png" )]
     public static var vignette512:Class;
     

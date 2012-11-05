@@ -11,8 +11,7 @@ package socialGrid.models.content {
     
     public var isActive:Boolean; // whether this content is currently being displayed or in line to be displayed
     
-    public var hasBeenDisplayed:Boolean; // whether this content has been displayed
-    public var timeDisplayed:Number; // when this content was displayed
+    public var timesDisplayed:Array; // times this content has been displayed. array length works as a counter for times displayed
     
     protected var canDoSizes:Array;
     protected var renderedDataDictionary:Dictionary;
@@ -20,6 +19,7 @@ package socialGrid.models.content {
     public function BaseContentVO() {
       canDoSizes = new Array();
       renderedDataDictionary = new Dictionary();
+      timesDisplayed = new Array();
     }
     
     public function canDo(size:String):Boolean {
@@ -45,5 +45,15 @@ package socialGrid.models.content {
     public function unrender():void {
       // [(!)] implement this
     }
+    
+    public function get numTimesDisplayed():int {
+      return timesDisplayed.length;
+    }
+    
+    /*
+    public function get hasBeenDisplayed():Boolean {
+      return Boolean(timesDisplayed.length);
+    }
+    */
   }
 }

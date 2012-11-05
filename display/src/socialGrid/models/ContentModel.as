@@ -1,4 +1,5 @@
 package socialGrid.models {
+  
   import flash.events.Event;
   
   import socialGrid.core.Locator;
@@ -10,9 +11,9 @@ package socialGrid.models {
   
   public class ContentModel {
     
-    public var contentVOs:Array;
+    public var contentVOs:Array; // all content
     
-    public var removedPostIds:Array;
+    public var removedPostIds:Array; // ids of content to be removed
     
     public function ContentModel() {
        contentVOs = new Array();
@@ -21,13 +22,20 @@ package socialGrid.models {
     
     // ADD AND REMOVE
     
-    public function addContentVO(contentVO:BaseContentVO):void {
-      
-      // check to see if it's blacklisted
-      if (checkRemovedPostIdsForContentVO(contentVO)) { return; }
-      
-      contentVOs.push(contentVO);
+    public function addContentVOs(contentVOs:Array):void {
+      var contentVO:BaseContentVO;
+      for each (contentVO in contentVOs) {
+        addContentVO(contentVO, false);
+      }
       Locator.instance.dispatchEvent(new Event('content_added')); 
+    }
+    
+    public function addContentVO(contentVO:BaseContentVO, signalContentAdded:Boolean = true):void {
+      if (checkRemovedPostIdsForContentVO(contentVO)) { return; } // check to see if it's blacklisted
+      contentVOs.push(contentVO);
+      if (signalContentAdded) {
+        Locator.instance.dispatchEvent(new Event('content_added'));
+      }
     }
     
     public function removeContentVOByPostId(postId:String):void {
@@ -52,7 +60,7 @@ package socialGrid.models {
     public function checkinContentVO(contentVO:BaseContentVO):void {
       contentVO.isActive = false;
       
-      // check to see if it's blacklisted
+      // check to see if it should be removed
       if (checkRemovedPostIdsForContentVO(contentVO)) {
         deleteContentVO(contentVO);
       }
@@ -100,15 +108,31 @@ package socialGrid.models {
           // not type (single)
           (contentQuery.notContentType != 'none' && contentVO.contentType == contentQuery.notContentType) ||
           // size
-          (contentQuery.size != 'any' && !contentVO.canDo(contentQuery.size)) ||
-          // has been displayed
-          (!contentQuery.matchDisplayedContent && contentVO.hasBeenDisplayed)
+          (contentQuery.size != 'any' && !contentVO.canDo(contentQuery.size))
         ) {
           // match not found
         } else {
           matches.push(contentVO);
         }
       }
+      
+      // favor ones displayed the least
+      var lowestTimesDisplayed:Number = Number.POSITIVE_INFINITY;
+      var lowestTimesDisplayedMatches:Array = new Array();
+      if (contentQuery.favorLeastDisplayedContent) {
+        for each (contentVO in matches) {
+          if (contentVO.numTimesDisplayed < lowestTimesDisplayed) {
+            lowestTimesDisplayed = contentVO.numTimesDisplayed;
+          }
+        }
+        for each (contentVO in matches) {
+          if (contentVO.numTimesDisplayed == lowestTimesDisplayed) {
+            lowestTimesDisplayedMatches.push(contentVO);
+          }
+        }
+        matches = lowestTimesDisplayedMatches;
+      }
+      
       return matches;
     }
     

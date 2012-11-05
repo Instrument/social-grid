@@ -1,7 +1,10 @@
 package socialGrid.models.programs {
+  
   import socialGrid.core.Locator;
   
   public class LayoutProgram extends BaseProgram {
+  
+    public var layoutHasBeenApplied:Boolean; // whether the layout has been applied
     
     public function LayoutProgram() {
       programType = 'layout';
@@ -14,8 +17,10 @@ package socialGrid.models.programs {
     }
     
     override public function checkReadyToFinish():void {
-      // if it has started, it's ready to finish
-      finish();
+      // if it has started to display, it's ready to finish
+      if (layoutHasBeenApplied) {
+        finish();
+      }
     }
     
     override protected function start():void {

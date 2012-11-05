@@ -16,7 +16,7 @@ package socialGrid.util {
       styleSheet = SocialGridAssets.styleSheet;
       
       embedFonts = true;
-      antiAliasType = AntiAliasType.ADVANCED;
+      //antiAliasType = AntiAliasType.ADVANCED; // seems to make underscores too thick on smaller sizes
       
       autoSize = TextFieldAutoSize.LEFT;
       wordWrap = true;

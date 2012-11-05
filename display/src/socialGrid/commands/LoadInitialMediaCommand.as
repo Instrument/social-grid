@@ -11,7 +11,7 @@ package socialGrid.commands {
     protected var minNum1x1:int; // the minimum number of 1x1 content that must be loaded into the app before it can start
     
     public function LoadInitialMediaCommand() {
-      minNum1x1 = 60;
+      minNum1x1 = 30;
     }
     
     override public function execute(e:Event):void {

@@ -1,8 +1,6 @@
 package socialGrid.util.assetLoader {
   
   import flash.display.Bitmap;
-  import flash.display.BitmapData;
-  import flash.display.Loader;
   
   public class ImageAssetLoaderItem extends BaseAssetLoaderItem {
     
@@ -10,7 +8,7 @@ package socialGrid.util.assetLoader {
     protected var imageDataName:String;
     
     public function ImageAssetLoaderItem(url:String, imageParentObj:Object, imageDataName:String) {
-      loaderType = Loader;
+      loaderType = 'image';
       this.url = url;
       this.imageParentObj = imageParentObj;
       this.imageDataName = imageDataName;
