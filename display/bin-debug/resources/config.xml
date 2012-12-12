@@ -24,30 +24,16 @@
   <pullSocialDirectly>true</pullSocialDirectly>
   
   <!-- if pull social media directly, lists of hashtags to use -->
-  <twitterHashtags>yolo</twitterHashtags>
-  <instagramHashtags>yolo</instagramHashtags>
+  <twitterHashtags>instrumentoutpost</twitterHashtags>
+  <instagramHashtags>instrumentoutpost</instagramHashtags>
+  
+  <!-- if pull social directly, api access token for instagram -->
+  <instagramAccessToken>3694361.6bd3b25.73184e078dc24687a4736ab1748ac251</instagramAccessToken>
   
   <!-- where the backend lives -->
   <backendRoot>http://ec2-50-112-66-228.us-west-2.compute.amazonaws.com:1337</backendRoot>
   
   <!-- where the photobooth images live -->
   <photoboothFolderPath>resources/photobooth</photoboothFolderPath>
-  
-  <!--
-  
-  'twitter': {
-  'consumer_key': 'shoEv80nwOZzANqn4otc6Q',
-  'consumer_secret': 'vAgdLQz06locywYRiSNXogDScvahPfuwd68AfWUwk',
-  'access_token_key': '15369416-3KQNPGtTgqc6boYQoWuk4ZOnEyI29otYUIrB7Y5vn',
-  'access_token_secret': 'GU0p4MJw0aq3Ysryg8srRvn4pDI9BaSLOFWSlhsanOA'
-  },
-  // Sign up at http://api.instagram.com
-  'instagram': {
-  'client_id': '6bd3b25920394891bcd71b933ee948cc',
-  'client_secret': '2782e585026f4371bb8e47bcf5079926',
-  'callback_url': 'http://hostname-from-above/instagram' // Should end in "/instagram", so the service gets a pingback
-  },
-  
-  -->
   
 </config>

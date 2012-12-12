@@ -49,9 +49,15 @@ package socialGrid.controllers {
     }
     
     public function start():void {
-      var program:BaseProgram = programs['layout'];
-      makeWaitingLayout();
-      program.init();
+      var num5x3:int = Locator.instance.appModel.contentModel.getNumContentVOs(new ContentQuery({size:'5x3'}));
+      if (num5x3) {
+        var program:BaseProgram = programs['layout'];
+        makeWaitingLayout();
+        program.init();
+      } else {
+        program = programs['random'];
+        program.init();
+      }
       startProgram(program);
     }
     

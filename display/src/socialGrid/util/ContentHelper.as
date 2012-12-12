@@ -12,14 +12,6 @@ package socialGrid.util {
   
   public class ContentHelper {
     
-    
-    // create image view
-    
-    // create video view
-    
-    // create interstitial view
-    
-    
     public static function createInterstitialContentView(bitmapData:BitmapData, size:String):InterstitialContentView {
       var sizeSplit:Array = size.split('x');
       var contentView:InterstitialContentView = new InterstitialContentView(bitmapData);

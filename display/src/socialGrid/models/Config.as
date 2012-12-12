@@ -25,6 +25,7 @@ package socialGrid.models {
     
     public var pullSocialDirectly:Boolean;
     
+    public var instagramAccessToken:String;
     public var twitterHashtags:Array;
     public var instagramHashtags:Array;
     
@@ -58,16 +59,16 @@ package socialGrid.models {
       
       // large twitter
       
-      largeTwitterTextColor = getXmlColor('largeTwitterTextColor', 0x7c7c7c);
+      largeTwitterTextColor = getXmlColor('largeTwitterTextColor', 0xf2f2f2);
       setStyleColor('.twitter-3x3-text', largeTwitterTextColor);
       setStyleColor('.twitter-3x3-author', largeTwitterTextColor);
       setStyleColor('.twitter-3x3-meta', largeTwitterTextColor);
       
-      largeTwitterHighlightColor = getXmlColor('largeTwitterHighlightColor', 0x1babbe);
+      largeTwitterHighlightColor = getXmlColor('largeTwitterHighlightColor', 0xf2f2f2);
       setStyleColor('.twitter-3x3-text-highlight', largeTwitterHighlightColor);
       setStyleColor('.twitter-3x3-meta-highlight', largeTwitterHighlightColor);
       
-      largeTwitterBackgroundColor = getXmlColor('largeTwitterBackgroundColor', 0xf2f2f2);
+      largeTwitterBackgroundColor = getXmlColor('largeTwitterBackgroundColor', 0x1babbe);
       
       // instagram
       
@@ -81,10 +82,11 @@ package socialGrid.models {
 
       pullSocialDirectly = getXmlBoolean('pullSocialDirectly', true);
       
+      instagramAccessToken = getXmlString('instagramAccessToken', '');
       twitterHashtags = getXmlArray('twitterHashtags', []);
       instagramHashtags = getXmlArray('instagramHashtags', []);
       
-      backendRoot = getXmlString('backendRoot', 'http://ec2-50-112-66-228.us-west-2.compute.amazonaws.com:1337');
+      backendRoot = getXmlString('backendRoot', '');
       
       photoboothFolderPath = getXmlString('photoboothFolderPath', 'resources/photobooth');
     }

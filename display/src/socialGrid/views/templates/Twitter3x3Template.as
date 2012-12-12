@@ -63,8 +63,6 @@ package socialGrid.views.templates {
       
       metaTF.text = twitterContentVO.postDateTime.toUpperCase() + '<highlight> / via Twitter</highlight>';
       metaTF.y = authorHandleTF.y + authorHandleTF.leadingTextHeight;
-      
-      // [(!)] needs logic to keep from overflowing!
     }
   }
 }

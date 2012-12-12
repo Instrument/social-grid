@@ -15,7 +15,7 @@ package socialGrid.commands {
     protected function onLoadingViewFinished():void {
       
       // show test view
-      //Locator.instance.ui.showTestView();
+      //Locator.instance.ui.showTestView(); // renders twitter and instagram templates
       
       // start cycling content
       Locator.instance.contentCycleController.start();

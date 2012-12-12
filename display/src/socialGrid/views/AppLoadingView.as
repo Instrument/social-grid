@@ -15,13 +15,14 @@ package socialGrid.views {
   import socialGrid.util.GradientHelper;
   import socialGrid.util.GraphicsHelper;
   import socialGrid.util.StyledTextField;
+  import flash.display.MovieClip;
 
   public class AppLoadingView extends Sprite {
     
     protected var bkg:Shape;
     protected var bkgCircle:Shape;
     protected var loadingCircle:Shape;
-    protected var foldingTeepee:FoldingTeepee;
+    protected var foldingTeepee:MovieClip;
     protected var loadingTF:StyledTextField;
     protected var cover:Shape;
     
@@ -81,22 +82,26 @@ package socialGrid.views {
       loadingCircle.x = 640;
       loadingCircle.y = 384;
       
-      foldingTeepee = new FoldingTeepee();
-      addChild(foldingTeepee);
-      foldingTeepee.x = 512;
-      foldingTeepee.y = 256;
-      foldingTeepee.stop();
-      foldingTeepee.visible = false;
-      
-      // color transform teepee
-      var color:uint = Locator.instance.appModel.config.loadingIconColor;
-      var rgbObj:Object = {
-        red: ((color & 0xFF0000) >> 16),
-        green: ((color & 0x00FF00) >> 8),
-        blue: ((color & 0x0000FF))
-      };
-      foldingTeepee.transform.colorTransform = new ColorTransform(0, 0, 0, 1, rgbObj.red, rgbObj.green, rgbObj.blue);
-      
+      if (Locator.instance.appModel.config.loadingIconColor == 0x0a201d) {
+		  foldingTeepee = new FoldingTeepeeColoredComposite();
+	  } else {
+		  foldingTeepee = new FoldingTeepee();
+		  // color transform teepee
+		  var color:uint = Locator.instance.appModel.config.loadingIconColor;
+		  var rgbObj:Object = {
+			  red: ((color & 0xFF0000) >> 16),
+			  green: ((color & 0x00FF00) >> 8),
+			  blue: ((color & 0x0000FF))
+		  };
+		  foldingTeepee.transform.colorTransform = new ColorTransform(0, 0, 0, 1, rgbObj.red, rgbObj.green, rgbObj.blue);
+	  }
+	  
+	  addChild(foldingTeepee);
+	  foldingTeepee.x = 512;
+	  foldingTeepee.y = 256;
+	  foldingTeepee.stop();
+	  foldingTeepee.visible = false;
+	  
       loadingTF = new StyledTextField('app-loading-text');
       addChild(loadingTF);
       loadingTF.x = 512 + 88;
@@ -191,8 +196,10 @@ package socialGrid.views {
     }
     
     protected function revealCrest():void {
-      foldingTeepee.visible = true;
       addEventListener(Event.ENTER_FRAME, foldingTeepeeFrameListener);
+      
+      foldingTeepee.visible = true;
+      
       foldingTeepee.play();
     }
     
@@ -214,6 +221,7 @@ package socialGrid.views {
     }
     
     protected function foldingTeepeeFrameListener(e:Event):void {
+      
       if (!loadingShown && foldingTeepee.currentFrame >= 0.3 * foldingTeepee.totalFrames) {
         loadingShown = true;
         eaze(loadingTF).to(1.5, {alpha:1}).easing(Cubic.easeInOut);

@@ -218,7 +218,7 @@ package socialGrid.views {
       var transitionView:TransitionView = e.currentTarget as TransitionView;
       
       if (transitionView.contentView.contentViewType == 'user_video') {
-        trace('transition view done ' + transitionView.gridX + ' ' + transitionView.gridY);
+        //trace('transition view done ' + transitionView.gridX + ' ' + transitionView.gridY);
       }
       
       bmp.bitmapData.draw(transitionView.incomingBmd, new Matrix(1, 0, 0, 1, 256 * transitionView.gridX, 256 * transitionView.gridY));

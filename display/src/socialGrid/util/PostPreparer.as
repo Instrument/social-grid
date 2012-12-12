@@ -1,5 +1,5 @@
-package socialGrid.util
-{
+package socialGrid.util {
+  
   import flash.display.Bitmap;
   import flash.display.BitmapData;
   import flash.display.Loader;
@@ -23,8 +23,8 @@ package socialGrid.util
     protected var currentImageLoaderCompleteCallback:Function;
     protected var currentImageLoaderErrorCallback:Function;
     
-    public function PostPreparer()
-    {
+    public function PostPreparer() {
+      
       imageLoader = new Loader();
       imageLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, imageIOErrorListener);
       imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoadComplete);

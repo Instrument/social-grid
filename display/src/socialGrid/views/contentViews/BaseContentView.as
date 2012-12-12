@@ -63,17 +63,7 @@ package socialGrid.views.contentViews {
     public function onTransitionViewComplete():void {
       transitionViewCount--;
       
-      if (contentViewType == 'user_video') {
-        trace(transitionViewCount + ' transition views left');
-      }
-      
-      
       if (transitionViewCount == 0) {
-        
-        if (contentViewType == 'user_video') {
-          trace('calling start display');
-        }
-        
         startDisplay();
       }
     }

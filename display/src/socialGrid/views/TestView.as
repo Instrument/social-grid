@@ -32,8 +32,8 @@ package socialGrid.views {
       
       var instagramPostVO:InstagramPostVO = new InstagramPostVO();
       instagramPostVO.authorHandle = '@Swedeman';
-      instagramPostVO.caption = 'WHAT A FESTIVAL, WILL DEFINITELY BE BACK #NEXTYEAR! IF MY MESSAGE GOES @MULTIPLE LINES THAT’S http://OK.com. THE MAX  NUMBER OF LINES IS 3 I THINK. BEYOND THAT WE will cut it short.';
-      instagramPostVO.imageData = new BitmapData(512, 512, true, 0xffffff00);
+      instagramPostVO.caption = 'WHAT A FESTIVAL, WILL DEFINITELY BE BACK #NEXTYEAR! IF MY MESSAGE GOES @MULTIPLE LINES THAT’S http://OK.com.';
+      instagramPostVO.imageData = new BitmapData(512, 512, true, 0xff0a201d);
       var instagramContentVO:InstagramContentVO = new InstagramContentVO(instagramPostVO);
       
       // draw stuff

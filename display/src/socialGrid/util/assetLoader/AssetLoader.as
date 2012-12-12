@@ -69,7 +69,7 @@ package socialGrid.util.assetLoader {
         
       } else {
         // loading is finished
-        loaderItems = new Array(); // [(!)] clean up memory?
+        loaderItems = new Array();
         isLoading = false;
         dispatchEvent(new Event('asset_loader_complete'));
       }

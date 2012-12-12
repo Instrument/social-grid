@@ -52,11 +52,8 @@ package socialGrid.views.templates {
         captionTF.y = 512 - captionTF.leadingTextHeight - 53;
       }
       
-      // [(!)] limit caption tf to 3 lines
-      
       metaTF.text = instagramContentVO.authorHandle.toUpperCase() + '<highlight> / via Instagram</highlight>';;
       metaTF.y = captionTF.y - metaTF.leadingTextHeight;
-      
     }
   }
 }

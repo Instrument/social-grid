@@ -170,9 +170,6 @@ package socialGrid.models {
     protected function deleteContentVO(contentVO:BaseContentVO):void {
       if (contentVO.isActive) { return; } // can't remove it if it's active
       
-      // [(!)] actually remove contentVO, clean up memory
-      contentVO.unrender();
-      
       ArrayHelper.removeItemFromArray(contentVO, contentVOs);
     }
   }

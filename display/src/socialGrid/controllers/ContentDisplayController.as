@@ -367,7 +367,7 @@ package socialGrid.controllers {
       displayContentViews(Locator.instance.contentCycleController.waitingLayout.contentViews);
       
       // destroy waiting layout
-      Locator.instance.contentCycleController.waitingLayout = null; // [(!)] memory?
+      Locator.instance.contentCycleController.waitingLayout = null;
       
       // flag layout has been applied
       var layoutProgram:LayoutProgram = Locator.instance.contentCycleController.currentProgram as LayoutProgram;

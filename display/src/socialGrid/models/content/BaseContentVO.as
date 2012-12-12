@@ -42,18 +42,8 @@ package socialGrid.models.content {
       }
     }
     
-    public function unrender():void {
-      // [(!)] implement this
-    }
-    
     public function get numTimesDisplayed():int {
       return timesDisplayed.length;
     }
-    
-    /*
-    public function get hasBeenDisplayed():Boolean {
-      return Boolean(timesDisplayed.length);
-    }
-    */
   }
 }

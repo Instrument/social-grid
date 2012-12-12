@@ -44,7 +44,7 @@ package socialGrid.controllers {
     
     protected function surveyPhotoboothImages():void {
       var photoboothImageUrls:Array = survey.surveyPhotoboothImages();
-      //trace(photoboothImageUrls.length + ' new photobooth images found');
+      //trace(photoboothImageUrls.length + ' photobooth images found');
       var url:String;
       for each (url in photoboothImageUrls) {
         ArrayHelper.addItemToArray(url, imagesToLoad);

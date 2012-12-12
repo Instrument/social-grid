@@ -11,7 +11,7 @@ package socialGrid.assets {
 			source="../../embed/fonts/lorimer/LorimerNo2CondensedMedium.otf",
 			fontName="LorimerNo2CondensedMedium",
 			fontStyle="normal",
-			fontWeight = "normal",
+			//fontWeight = "normal",
 			embedAsCFF = "false",
 			mimeType="application/x-font-truetype"
 		)]

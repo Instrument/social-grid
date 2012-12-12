@@ -6,6 +6,8 @@ package socialGrid.util {
   import flash.net.URLLoader;
   import flash.net.URLRequest;
   
+  import socialGrid.core.Locator;
+  
   public class PostsLoader extends EventDispatcher {
     
     public var loader:URLLoader;
@@ -27,7 +29,6 @@ package socialGrid.util {
     }
     
     public function loadPosts():void {
-      
       if (isLoading) { return; }
       
       var loadUrl:String;
@@ -37,7 +38,7 @@ package socialGrid.util {
           loadUrl = 'http://search.twitter.com/search.json?q=%23' + hashtag;
           break;
         case 'instagram':
-          loadUrl = 'http://statigr.am/controller_nl.php?action=nlGetMethod&method=mediasTag&value=' + hashtag;
+          loadUrl = 'https://api.instagram.com/v1/tags/' + hashtag + '/media/recent?access_token=' + Locator.instance.appModel.config.instagramAccessToken + '&count=30';
           break;
       }
       

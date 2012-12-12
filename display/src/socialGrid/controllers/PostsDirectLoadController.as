@@ -34,8 +34,11 @@ package socialGrid.controllers {
       for each (hashtag in Locator.instance.appModel.config.twitterHashtags) {
         makePostsLoader('twitter', hashtag);
       }
-      for each (hashtag in Locator.instance.appModel.config.instagramHashtags) {
-        makePostsLoader('instagram', hashtag);
+      
+      if (Locator.instance.appModel.config.instagramAccessToken) {
+        for each (hashtag in Locator.instance.appModel.config.instagramHashtags) {
+          makePostsLoader('instagram', hashtag);
+        }
       }
       
       loadNext();
@@ -111,6 +114,7 @@ package socialGrid.controllers {
     }
     
     protected function populateInstagramPostVO(instagramPostVO:InstagramPostVO, postObj:Object):void {
+      
       instagramPostVO.postType = 'instagram';
       instagramPostVO.hashtags = postObj.tags;
       instagramPostVO.postId = 'instagram_' + postObj.id;

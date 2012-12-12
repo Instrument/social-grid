@@ -17,7 +17,7 @@ package socialGrid.util.assetLoader {
     override public function onLoadSuccess(content:*):void {
       var bmp:Bitmap = Bitmap(content);
       if (imageParentObj.hasOwnProperty(imageDataName)) {
-        imageParentObj[imageDataName] = bmp.bitmapData.clone(); // [(!)] may cause error if the property isn't not type BitmapData
+        imageParentObj[imageDataName] = bmp.bitmapData.clone();
       }
       bmp.bitmapData.dispose();
     }
