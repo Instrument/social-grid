@@ -15,204 +15,204 @@ var connection = mysql.createConnection(credentials.mysql);
 var twitterStream;
 
 http.createServer(function (req, res) {
-    var cookies = {};
-    req.headers.cookie && req.headers.cookie.split(';').forEach(function (cookie) {
-        var parts = cookie.split('=');
-        cookies[parts[0].trim()] = (parts[1] || '').trim();
-    });
+    // var cookies = {};
+    // req.headers.cookie && req.headers.cookie.split(';').forEach(function (cookie) {
+    //     var parts = cookie.split('=');
+    //     cookies[parts[0].trim()] = (parts[1] || '').trim();
+    // });
 
-    var filePath = '.' + req.url;
-    if (filePath == './') filePath = './index.htm';
+    // var filePath = '.' + req.url;
+    // if (filePath == './') filePath = './index.htm';
 
-    var extname = path.extname(filePath);
-    var contentType = '';
-    switch (extname) {
-    case '.js':
-        contentType = 'text/javascript';
-        break;
-    case '.css':
-        contentType = 'text/css';
-        break;
-    }
-    if (contentType) {
-        fs.exists(filePath, function (exists) {
+    // var extname = path.extname(filePath);
+    // var contentType = '';
+    // switch (extname) {
+    // case '.js':
+    //     contentType = 'text/javascript';
+    //     break;
+    // case '.css':
+    //     contentType = 'text/css';
+    //     break;
+    // }
+    // if (contentType) {
+    //     fs.exists(filePath, function (exists) {
 
-            if (exists) {
-                fs.readFile(filePath, function (error, content) {
-                    if (error) {
-                        res.writeHead(500);
-                        res.end();
-                    } else {
-                        res.writeHead(200, {
-                            'Content-Type': contentType
-                        });
-                        res.end(content, 'utf-8');
-                    }
-                });
-            } else {
-                res.writeHead(404);
-                res.end();
-            }
-        });
-    } else {
-        var pathname = url.parse(req.url).pathname;
-        if (cookies.loggedin == 'n00dles' || !credentials.password || (pathname != '/' && pathname != '/live-manage' && pathname != '/all' && pathname != '/shown')) {
-            var url_parts = url.parse(req.url, true);
-            switch (pathname) {
-            case '/live-manage':
-                loadPage(req, res, 'live-manage');
-                break;
+    //         if (exists) {
+    //             fs.readFile(filePath, function (error, content) {
+    //                 if (error) {
+    //                     res.writeHead(500);
+    //                     res.end();
+    //                 } else {
+    //                     res.writeHead(200, {
+    //                         'Content-Type': contentType
+    //                     });
+    //                     res.end(content, 'utf-8');
+    //                 }
+    //             });
+    //         } else {
+    //             res.writeHead(404);
+    //             res.end();
+    //         }
+    //     });
+    // } else {
+    //     var pathname = url.parse(req.url).pathname;
+    //     if (cookies.loggedin == 'n00dles' || !credentials.password || (pathname != '/' && pathname != '/live-manage' && pathname != '/all' && pathname != '/shown')) {
+    //         var url_parts = url.parse(req.url, true);
+    //         switch (pathname) {
+    //         case '/live-manage':
+    //             loadPage(req, res, 'live-manage');
+    //             break;
 
-            case '/shown':
-                loadPage(req, res, 'shown');
-                break;
+    //         case '/shown':
+    //             loadPage(req, res, 'shown');
+    //             break;
 
-            case '/all':
-                loadPage(req, res, 'all');
-                break;
+    //         case '/all':
+    //             loadPage(req, res, 'all');
+    //             break;
 
-            case '/login':
-                if (req.method == 'POST') {
-                    var body = '';
-                    req.on('data', function (data) {
-                        body += data;
-                    });
-                    req.on('end', function () {
-                        var POST = qs.parse(body);
-                        if ((POST['username'] == credentials.username && POST['password'] == credentials.password) || (!credentials.password)) {
-                            res.writeHead(302, {
-                                'Location': '/live-manage',
-                                'Set-Cookie': 'loggedin=n00dles',
-                            });
-                            res.end();
-                        } else {
-                            loadPage(req, res, 'login');
-                        }
-                    });
-                }
-                break;
+    //         case '/login':
+    //             if (req.method == 'POST') {
+    //                 var body = '';
+    //                 req.on('data', function (data) {
+    //                     body += data;
+    //                 });
+    //                 req.on('end', function () {
+    //                     var POST = qs.parse(body);
+    //                     if ((POST['username'] == credentials.username && POST['password'] == credentials.password) || (!credentials.password)) {
+    //                         res.writeHead(302, {
+    //                             'Location': '/live-manage',
+    //                             'Set-Cookie': 'loggedin=n00dles',
+    //                         });
+    //                         res.end();
+    //                     } else {
+    //                         loadPage(req, res, 'login');
+    //                     }
+    //                 });
+    //             }
+    //             break;
 
-            case '/get-shown':
-                if (url_parts.query['lastid']) {
-                    if (url_parts.query['lastid'] != -1) {
-                        checkForNewItems(req, res, url_parts.query['lastid'], url_parts.query['app']);
-                    } else {
-                        connection.query('SELECT * FROM mfnw_shown JOIN mfnw_data ON mfnw_data.id=mfnw_shown.parent_id order by mfnw_shown.id desc limit 100', function (err, rows, fields) {
-                            res.writeHead(200, {
-                                'Content-Type': 'text/plain',
-                                'Access-Control-Allow-Origin': '*'
-                            });
-                            rowBits = jsonFormatRows(rows);
-                            connection.query('SELECT id FROM mfnw_shown order by id desc limit 1', function (err, rows, fields) {
-                                res.write('{"message": "success", "items": ' + rowBits[0] + ', "lastid": ' + rows[0].id + '}', 'utf8');
-                                res.end();
-                            });
-                        });
-                    }
-                } else {
-                    res.end('Need previous id');
-                }
-                break;
+            // case '/get-shown':
+            //     if (url_parts.query['lastid']) {
+            //         if (url_parts.query['lastid'] != -1) {
+            //             checkForNewItems(req, res, url_parts.query['lastid'], url_parts.query['app']);
+            //         } else {
+            //             connection.query('SELECT * FROM mfnw_shown JOIN mfnw_data ON mfnw_data.id=mfnw_shown.parent_id order by mfnw_shown.id desc limit 100', function (err, rows, fields) {
+            //                 res.writeHead(200, {
+            //                     'Content-Type': 'text/plain',
+            //                     'Access-Control-Allow-Origin': '*'
+            //                 });
+            //                 rowBits = jsonFormatRows(rows);
+            //                 connection.query('SELECT id FROM mfnw_shown order by id desc limit 1', function (err, rows, fields) {
+            //                     res.write('{"message": "success", "items": ' + rowBits[0] + ', "lastid": ' + rows[0].id + '}', 'utf8');
+            //                     res.end();
+            //                 });
+            //             });
+            //         }
+            //     } else {
+            //         res.end('Need previous id');
+            //     }
+            //     break;
 
-            case '/live-manage-longpoll':
-                if (url_parts.query['lastid']) {
-                    if (url_parts.query['lastid'] != -1) {
-                        checkForNewItems(req, res, url_parts.query['lastid'], url_parts.query['app']);
-                    } else {
-                        connection.query('SELECT * FROM mfnw_data order by id desc limit 1', function (err, rows, fields) {
-                            res.writeHead(200, {
-                                'Content-Type': 'text/plain',
-                                'Access-Control-Allow-Origin': '*'
-                            });
-                            res.write('{"message": "success", "lastid": ' + rows[0]['id'] + '}', 'utf8');
-                            res.end();
-                        });
-                    }
-                } else {
-                    res.end('Need previous id');
-                }
-                break;
+            // case '/live-manage-longpoll':
+            //     if (url_parts.query['lastid']) {
+            //         if (url_parts.query['lastid'] != -1) {
+            //             checkForNewItems(req, res, url_parts.query['lastid'], url_parts.query['app']);
+            //         } else {
+            //             connection.query('SELECT * FROM mfnw_data order by id desc limit 1', function (err, rows, fields) {
+            //                 res.writeHead(200, {
+            //                     'Content-Type': 'text/plain',
+            //                     'Access-Control-Allow-Origin': '*'
+            //                 });
+            //                 res.write('{"message": "success", "lastid": ' + rows[0]['id'] + '}', 'utf8');
+            //                 res.end();
+            //             });
+            //         }
+            //     } else {
+            //         res.end('Need previous id');
+            //     }
+            //     break;
 
-            case '/remove-items':
-                if (req.method == 'POST') {
-                    var body = '';
-                    req.on('data', function (data) {
-                        body += data;
-                    });
-                    req.on('end', function () {
+            // case '/remove-items':
+            //     if (req.method == 'POST') {
+            //         var body = '';
+            //         req.on('data', function (data) {
+            //             body += data;
+            //         });
+            //         req.on('end', function () {
 
-                        var POST = qs.parse(body);
-                        connection.query('UPDATE mfnw_data SET approved=0, updated_at=NOW() where id IN(' + POST['items'] + ')', function (err, rows, fields) {
-                            if (err) console.log(err);
-                        });
+            //             var POST = qs.parse(body);
+            //             connection.query('UPDATE mfnw_data SET approved=0, updated_at=NOW() where id IN(' + POST['items'] + ')', function (err, rows, fields) {
+            //                 if (err) console.log(err);
+            //             });
 
-                        res.writeHead(200, {
-                            'Content-Type': 'text/plain',
-                            'Access-Control-Allow-Origin': '*'
-                        });
-                        res.write('{"message": "Successfully removed item(s) ' + POST['items'] + '"}', 'utf8');
-                        res.end();
-                    });
-                } else {
-                    res.writeHead(200, {
-                        'Content-Type': 'text/plain',
-                        'Access-Control-Allow-Origin': '*'
-                    });
-                    res.write('{"message": "Should be POST"}', 'utf8');
-                    res.end();
-                }
-                break;
+            //             res.writeHead(200, {
+            //                 'Content-Type': 'text/plain',
+            //                 'Access-Control-Allow-Origin': '*'
+            //             });
+            //             res.write('{"message": "Successfully removed item(s) ' + POST['items'] + '"}', 'utf8');
+            //             res.end();
+            //         });
+            //     } else {
+            //         res.writeHead(200, {
+            //             'Content-Type': 'text/plain',
+            //             'Access-Control-Allow-Origin': '*'
+            //         });
+            //         res.write('{"message": "Should be POST"}', 'utf8');
+            //         res.end();
+            //     }
+            //     break;
 
-            case '/shown-items':
-                console.log('SHOWN ITEMS')
-                if (req.method == 'POST') {
-                    var body = '';
-                    req.on('data', function (data) {
-                        body += data;
-                    });
-                    req.on('end', function () {
-                        var POST = qs.parse(body);
-                        console.log(POST['items']);
-                        connection.query('INSERT INTO mfnw_shown (parent_id) VALUES(' + POST['items'] + ')', function (err, rows, fields) {
-                            if (err) console.log(err);
-                        });
+            // case '/shown-items':
+            //     console.log('SHOWN ITEMS')
+            //     if (req.method == 'POST') {
+            //         var body = '';
+            //         req.on('data', function (data) {
+            //             body += data;
+            //         });
+            //         req.on('end', function () {
+            //             var POST = qs.parse(body);
+            //             console.log(POST['items']);
+            //             connection.query('INSERT INTO mfnw_shown (parent_id) VALUES(' + POST['items'] + ')', function (err, rows, fields) {
+            //                 if (err) console.log(err);
+            //             });
 
-                        res.writeHead(200, {
-                            'Content-Type': 'text/plain',
-                            'Access-Control-Allow-Origin': '*'
-                        });
-                        res.write('{"message": "Successfully added shown item(s) ' + POST['items'] + '"}', 'utf8');
-                        res.end();
-                    });
-                } else {
-                    res.writeHead(200, {
-                        'Content-Type': 'text/plain',
-                        'Access-Control-Allow-Origin': '*'
-                    });
-                    res.write('{"message": "Should be POST"}', 'utf8');
-                    res.end();
-                }
-                break;
+            //             res.writeHead(200, {
+            //                 'Content-Type': 'text/plain',
+            //                 'Access-Control-Allow-Origin': '*'
+            //             });
+            //             res.write('{"message": "Successfully added shown item(s) ' + POST['items'] + '"}', 'utf8');
+            //             res.end();
+            //         });
+            //     } else {
+            //         res.writeHead(200, {
+            //             'Content-Type': 'text/plain',
+            //             'Access-Control-Allow-Origin': '*'
+            //         });
+            //         res.write('{"message": "Should be POST"}', 'utf8');
+            //         res.end();
+            //     }
+            //     break;
 
-            case '/get-items':
-                if (url_parts.query['lastid']) {
-                    if (url_parts.query['lastid'] != -1) {
-                        checkForNewItems(req, res, url_parts.query['lastid'], 'application');
-                    } else {
-                        connection.query('select * from mfnw_data where updated_at < NOW() - interval 10 second and approved=1 order by id desc limit 100', function (err, rows, fields) {
-                            res.writeHead(200, {
-                                'Content-Type': 'text/plain',
-                                'Access-Control-Allow-Origin': '*'
-                            });
-                            rowBits = jsonFormatRows(rows);
-                            res.write('{"message": "success", "items": ' + rowBits[0] + ', "lastid": ' + rowBits[1] + '}', 'utf8');
-                            res.end();
-                        });
-                    }
-                } else {
-                    res.end('Need previous id');
-                }
-                break;
+            // case '/get-items':
+            //     if (url_parts.query['lastid']) {
+            //         if (url_parts.query['lastid'] != -1) {
+            //             checkForNewItems(req, res, url_parts.query['lastid'], 'application');
+            //         } else {
+            //             connection.query('select * from mfnw_data where updated_at < NOW() - interval 10 second and approved=1 order by id desc limit 100', function (err, rows, fields) {
+            //                 res.writeHead(200, {
+            //                     'Content-Type': 'text/plain',
+            //                     'Access-Control-Allow-Origin': '*'
+            //                 });
+            //                 rowBits = jsonFormatRows(rows);
+            //                 res.write('{"message": "success", "items": ' + rowBits[0] + ', "lastid": ' + rowBits[1] + '}', 'utf8');
+            //                 res.end();
+            //             });
+            //         }
+            //     } else {
+            //         res.end('Need previous id');
+            //     }
+            //     break;
 
             case '/instagram':
                 console.log('Instagram Ping');
