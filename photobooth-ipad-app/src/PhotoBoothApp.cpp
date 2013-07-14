@@ -25,6 +25,9 @@ using namespace ci::app;
 using namespace std;
 
 
+// Super-cheesey way to handle retina/non-retina displays.
+#define DISPLAY_SCALE       0.5
+
 #define CAM_WIDTH           640
 #define CAM_HEIGHT          480
 
@@ -118,16 +121,14 @@ void PhotoBoothApp::setup()
     mNumberTextures.push_back( loadImage( loadResource("assets/countdown_2.png")));
     mNumberTextures.push_back( loadImage( loadResource("assets/countdown_1.png")));
 
-
-    // note that these are reversed for landscape mode.
-    width               = getWindowHeight();
-	height              = getWindowWidth();
+    width               = getWindowWidth() / DISPLAY_SCALE;
+	height              = getWindowHeight() / DISPLAY_SCALE;
     
     mCurrentState       = STATE_PREVIEW;
     
     mDiscardPos         = Vec2f(100, height + 100 );
     mSavePos            = Vec2f(width - 700, height + 100);
-    mCameraButtonPos    = Vec2f(width/2 - mCameraButtonTexture.getWidth()/2, 650 - mCameraButtonTexture.getHeight() / 2);
+    mCameraButtonPos    = Vec2f(width/2 - mCameraButtonTexture.getWidth() / 2, 650 - mCameraButtonTexture.getHeight() / 2);
 }
 
 
@@ -143,9 +144,8 @@ void PhotoBoothApp::touchesBegan( TouchEvent event ){
     TouchEvent::Touch touch = event.getTouches().front();
     Vec2f cameraButtonTargetPos = Vec2f(mCameraButtonPos.value());
     
-    // adjust touch coordinates for landscape mode.
-    float touchX = touch.getY();
-    float touchY = height - touch.getX();
+    float touchX = touch.getX() / DISPLAY_SCALE;
+    float touchY = touch.getY() / DISPLAY_SCALE;
     
     switch(mCurrentState) {
         case STATE_PREVIEW:
@@ -168,10 +168,10 @@ void PhotoBoothApp::touchesBegan( TouchEvent event ){
         
         case STATE_ACCEPT:
             
-            if(touch.getPos().x < 250) { // only look for touches near the bottom of the screen.
+            if(touchY > 1280) { // only look for touches near the bottom of the screen.
                 
                 // just split the screen in half, no need to do precise hit detection for save/cancel buttons..
-                if(touch.getPos().y > width/2){
+                if(touchX > width / 2){
                     
                     ip::flipVertical( &mCameraSurface );
                     cinder::cocoa::SafeUiImage img = cocoa::createUiImage( mCameraSurface );
@@ -241,9 +241,8 @@ void PhotoBoothApp::draw()
     glDepthMask( GL_FALSE );
 
     // Set up the view for landscape mode.
-	gl::setMatricesWindow(height, width);
-    gl::translate(Vec2f(height, 0));
-    gl::rotate(Vec3f(0, 0, 90.0f));
+	gl::setMatricesWindow(width * DISPLAY_SCALE, height * DISPLAY_SCALE);
+    gl::scale(DISPLAY_SCALE, DISPLAY_SCALE);
     
     // draw the live camera preview
 	if( mCameraTexture ) {
@@ -251,16 +250,20 @@ void PhotoBoothApp::draw()
         mCameraTexture.setFlipped(false);
         
         // draw the texture mirrored.
-        gl::draw( mCameraSurface, Rectf(0, height, width, 0) );
+        gl::draw( mCameraSurface, Rectf(width, 0, 0, height) );
 	}
 
-    // draw "idle" stuff (text and images overlayed on the 
+    // draw "idle" stuff (text and images overlayed on the live camera preview)
     if(mCurrentState == STATE_PREVIEW){
         gl::color(1, 1, 1, 0.75f);
-        gl::draw(mLightBg, Vec2f::zero());
+        gl::draw(mLightBg, Rectf(0, 0, width, height));
         gl::color(1, 1, 1, 1);
-        gl::draw(mIntroTexture, Vec2f::zero());
+        gl::draw(mIntroTexture, Rectf(0,0,width, height));
+        
         gl::draw(mCameraButtonTexture, mCameraButtonPos.value() - Vec2f(0, abs( sin(getElapsedSeconds() * 3) * 30)));
+
+        
+        //gl::draw(mCameraButtonTexture, Rectf(mCameraButtonPos.value().x,mCameraButtonPos.value().y, mCameraButtonTexture.getWidth() * 0.5 + mCameraButtonPos.value().x, mCameraButtonTexture.getHeight() * 0.5 + mCameraButtonPos.value().y) );//  mCameraButtonPos.value() );
     }
         
     // Draw the preview image with dark background.
@@ -281,7 +284,7 @@ void PhotoBoothApp::draw()
         float marginX = (width - imageWidth) / 2;
         float marginY = (height - imageHeight) / 2;
         
-        gl::draw(mPreviewTexture, Rectf(marginX, height - marginY, width - marginX, marginY) + mPreviewTexturePos);
+        gl::draw(mPreviewTexture, Rectf(marginX, marginY, width - marginX, height - marginY) + mPreviewTexturePos);
         
 
         // Draw semi-transparent pillar boxes to show how the sqare version of the image will look.
