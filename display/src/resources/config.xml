@@ -30,6 +30,13 @@
   <!-- if pull social directly, api access token for instagram -->
   <instagramAccessToken>3694361.6bd3b25.73184e078dc24687a4736ab1748ac251</instagramAccessToken>
   
+  <!-- As of version 1.1, the Twitter API requires authentication for searches, 
+       you will need to sign up for a developer account and create an application 
+       in order to generate a consumer key and secret.  
+       See: https://dev.twitter.com/ -->
+  <twitterConsumerKey>[your consumer key]</twitterConsumerKey>
+  <twitterConsumerSecret>[your consumer secret]</twitterConsumerSecret>
+  
   <!-- where the backend lives -->
   <backendRoot>http://ec2-50-112-66-228.us-west-2.compute.amazonaws.com:1337</backendRoot>
   

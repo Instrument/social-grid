@@ -28,6 +28,9 @@ package socialGrid.models {
     public var instagramAccessToken:String;
     public var twitterHashtags:Array;
     public var instagramHashtags:Array;
+	
+	public var twitterConsumerKey:String;
+	public var twitterConsumerSecret:String;
     
     public var backendRoot:String;
     
@@ -82,6 +85,9 @@ package socialGrid.models {
 
       pullSocialDirectly = getXmlBoolean('pullSocialDirectly', true);
       
+	  twitterConsumerKey = getXmlString('twitterConsumerKey', '');
+	  twitterConsumerSecret = getXmlString('twitterConsumerSecret', '');
+	  
       instagramAccessToken = getXmlString('instagramAccessToken', '');
       twitterHashtags = getXmlArray('twitterHashtags', []);
       instagramHashtags = getXmlArray('instagramHashtags', []);

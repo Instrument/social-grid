@@ -66,7 +66,7 @@ package socialGrid.controllers {
       switch (postType) {
         case 'twitter':
           try {
-            postsObj = JSON.parse(data).results;
+            postsObj = JSON.parse(data).statuses;
           } catch (e:Error) {
             trace('twitter json parse fail');
           }
@@ -109,8 +109,8 @@ package socialGrid.controllers {
       twitterPostVO.postTimestamp = DateHelper.parseTwitterDateTime(postObj.created_at);
       
       twitterPostVO.tweetText = postObj.text;
-      twitterPostVO.authorHandle = '@' + postObj.from_user;
-      twitterPostVO.authorName = postObj.from_user_name;
+      twitterPostVO.authorHandle = '@' + postObj.user.screen_name;
+      twitterPostVO.authorName = postObj.user.name;
     }
     
     protected function populateInstagramPostVO(instagramPostVO:InstagramPostVO, postObj:Object):void {

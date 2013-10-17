@@ -11,26 +11,30 @@ package socialGrid.util {
     public function DateHelper() {}
     
     public static function parseTwitterDateTime(dateTime:String):Number {
+      var matches:Array = dateTime.match(/\w+ (\w+) (\d+) (\d+?):(\d+?):(\d+) \+(\d+) (\d+)/);
+	  
+	  // Example value:
+	  // "Wed Mar 07 07:23:03 +0000 2012"
+	  
+	  // Regex result:
+	  // ["Wed Mar 07 07:23:03 +0000 2012", "Mar", "07", "07", "23", "03", "0000", "2012"]
       
-      // post date
-      var matches:Array = dateTime.match(/\w+?, (\d+) (\w+) (\d+) (\d+?):(\d+?):(\d+) \+(\d+)/);
-      
-      var year:int = int(matches[3]);
+	  var year:int = int(matches[7]);
       
       // find month
       var month:int;
       var i:int;
       for (i = 0; i < months.length; i++) {
-        if (String(months[i]).substr(0, 3).toLowerCase() == matches[2].toLowerCase()) {
+        if (String(months[i]).substr(0, 3).toLowerCase() == matches[1].toLowerCase()) {
           month = i;
         }
       }
       
-      var day:int = int(matches[1]) - 1;
-      var hour:int = int(matches[4]);
-      var min:int = int(matches[5]);
-      var sec:int = int(matches[6]);
-      var ms:int = int(matches[7]);
+      var day:int = int(matches[2]) - 1;
+      var hour:int = int(matches[3]);
+      var min:int = int(matches[4]);
+      var sec:int = int(matches[5]);
+      var ms:int = int(matches[6]);
       
       return Date.UTC(year, month, day + 1, hour, min, sec, ms);
     }
