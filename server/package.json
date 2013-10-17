@@ -1,0 +1,18 @@
+{
+  "name": "social-grid-server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "3.0.5",
+    "ejs": "*",
+    "bindings": "*",
+    "mysql": "*",
+    "ntwitter": "*",
+    "oauth": "*",
+    "underscore": "*",
+    "node-uuid": "*"
+  }
+}

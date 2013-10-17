@@ -62,7 +62,7 @@ function checkAllItems(lastid) {
 	$.ajax({
 		url: '/get-items?lastid=' + lastid + '&app=manage',
 		'success': function(data) {
-			data = $.parseJSON(data.replace(/[\n\r\t]+/g, ' '));
+			//data = $.parseJSON(data.replace(/[\n\r\t]+/g, ' '));
 			for (var i in data.items) {
 				//storedItems.reverse();
 				if (lastid==-1) {
@@ -130,7 +130,7 @@ function checkShownItems(lastid) {
 	$.ajax({
 		'url': '/get-shown?lastid=' + lastid + '&app=shown',
 		'success': function(data) {
-			data = $.parseJSON(data.replace(/[\n\r\t]+/g, ' '));
+			//data = $.parseJSON(data.replace(/[\n\r\t]+/g, ' '));
 			for (var i in data.items) {
 				//storedItems.reverse();
 				if (lastid==-1) {
@@ -251,7 +251,7 @@ function checkNewItems(lastid) {
 	$.ajax({
 		url: '/live-manage-longpoll?lastid=' + lastid + '&app=manage',
 		success: function(data) {
-			data = $.parseJSON(data.replace(/[\n\r\t]+/g, ' '));
+			//data = $.parseJSON(data.replace(/[\n\r\t]+/g, ' '));
 			if (data.items) {
 				for (item in data.items) {
 					var img = '';
@@ -298,7 +298,7 @@ function checkLiveItems(lastid) {
 		url: '/get-items?lastid=' + lastid + '&app=manage',
 		success: function(data) {
 			getItemsRaw = data;
-			data = $.parseJSON(data.replace(/[\n\r\t]+/g, ' '));
+			//data = $.parseJSON(data.replace(/[\n\r\t]+/g, ' '));
 			if (data.items) {
 				for (item in data.items) {
 					console.log(data.items[item].text);
